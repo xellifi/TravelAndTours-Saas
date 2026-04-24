@@ -295,3 +295,248 @@ export async function cloneBusinessAction(
     slug: newSlug,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Admin business CRUD (create / update / delete)
+// ---------------------------------------------------------------------------
+
+export type BusinessFormState = {
+  success: boolean;
+  message: string;
+  slug?: string;
+} | null;
+
+export type BusinessDeleteState = {
+  success: boolean;
+  message: string;
+} | null;
+
+export async function createBusinessAction(
+  _prev: BusinessFormState,
+  formData: FormData,
+): Promise<BusinessFormState> {
+  const { user, isAdmin } = await assertAdmin();
+  if (!user || !isAdmin) {
+    return { success: false, message: 'Admin access required.' };
+  }
+  const admin = createAdminClient();
+
+  const ownerId = ((formData.get('owner_id') as string) || '').trim();
+  const name = ((formData.get('name') as string) || '').trim();
+  const slugRaw = ((formData.get('slug') as string) || '').trim();
+  const templateId = ((formData.get('template_id') as string) || 'travel').trim();
+
+  if (!ownerId) return { success: false, message: 'Please pick the owner.' };
+  if (!name) return { success: false, message: 'Business name is required.' };
+  if (!slugRaw) return { success: false, message: 'Landing page URL is required.' };
+
+  const slug = normalizeSlug(slugRaw);
+  if (!slug) {
+    return {
+      success: false,
+      message: 'Landing page URL must contain letters or numbers.',
+    };
+  }
+
+  const { data: targetUser } = await admin
+    .from('users')
+    .select('id, email')
+    .eq('id', ownerId)
+    .maybeSingle();
+  if (!targetUser) return { success: false, message: 'That user no longer exists.' };
+
+  const { data: alreadyOwns } = await admin
+    .from('businesses')
+    .select('id')
+    .eq('owner_id', ownerId)
+    .maybeSingle();
+  if (alreadyOwns) {
+    return {
+      success: false,
+      message: `${targetUser.email} already owns a business.`,
+    };
+  }
+
+  const { data: slugTaken } = await admin
+    .from('businesses')
+    .select('id')
+    .eq('slug', slug)
+    .maybeSingle();
+  if (slugTaken) {
+    return {
+      success: false,
+      message: `That landing page URL ("${slug}") is already taken.`,
+    };
+  }
+
+  const { error } = await admin.from('businesses').insert({
+    owner_id: ownerId,
+    name,
+    slug,
+    template_id: templateId,
+    hero_images: [],
+  });
+
+  if (error) return { success: false, message: error.message };
+
+  revalidatePath('/admin');
+  revalidatePath('/admin/businesses');
+  revalidatePath(`/${slug}`);
+  return {
+    success: true,
+    message: `Created "${name}" for ${targetUser.email}.`,
+    slug,
+  };
+}
+
+export async function adminUpdateBusinessAction(
+  _prev: BusinessFormState,
+  formData: FormData,
+): Promise<BusinessFormState> {
+  const { user, isAdmin } = await assertAdmin();
+  if (!user || !isAdmin) {
+    return { success: false, message: 'Admin access required.' };
+  }
+  const admin = createAdminClient();
+
+  const id = ((formData.get('id') as string) || '').trim();
+  const ownerId = ((formData.get('owner_id') as string) || '').trim();
+  const name = ((formData.get('name') as string) || '').trim();
+  const slugRaw = ((formData.get('slug') as string) || '').trim();
+  const templateId = ((formData.get('template_id') as string) || 'travel').trim();
+
+  if (!id) return { success: false, message: 'Missing business id.' };
+  if (!ownerId) return { success: false, message: 'Please pick the owner.' };
+  if (!name) return { success: false, message: 'Business name is required.' };
+  if (!slugRaw) return { success: false, message: 'Landing page URL is required.' };
+
+  const slug = normalizeSlug(slugRaw);
+  if (!slug) {
+    return {
+      success: false,
+      message: 'Landing page URL must contain letters or numbers.',
+    };
+  }
+
+  const { data: existing } = await admin
+    .from('businesses')
+    .select('id, slug, owner_id')
+    .eq('id', id)
+    .maybeSingle();
+  if (!existing) return { success: false, message: 'That business no longer exists.' };
+
+  // If owner is being changed, make sure the new owner doesn't already have one.
+  if (ownerId !== existing.owner_id) {
+    const { data: targetUser } = await admin
+      .from('users')
+      .select('id, email')
+      .eq('id', ownerId)
+      .maybeSingle();
+    if (!targetUser) return { success: false, message: 'That user no longer exists.' };
+
+    const { data: alreadyOwns } = await admin
+      .from('businesses')
+      .select('id')
+      .eq('owner_id', ownerId)
+      .neq('id', id)
+      .maybeSingle();
+    if (alreadyOwns) {
+      return {
+        success: false,
+        message: `${targetUser.email} already owns a business.`,
+      };
+    }
+  }
+
+  // Slug uniqueness across other businesses.
+  if (slug !== existing.slug) {
+    const { data: slugTaken } = await admin
+      .from('businesses')
+      .select('id')
+      .eq('slug', slug)
+      .neq('id', id)
+      .maybeSingle();
+    if (slugTaken) {
+      return {
+        success: false,
+        message: `That landing page URL ("${slug}") is already taken.`,
+      };
+    }
+  }
+
+  const { error } = await admin
+    .from('businesses')
+    .update({ owner_id: ownerId, name, slug, template_id: templateId })
+    .eq('id', id);
+
+  if (error) return { success: false, message: error.message };
+
+  revalidatePath('/admin');
+  revalidatePath('/admin/businesses');
+  revalidatePath(`/${slug}`);
+  if (existing.slug && existing.slug !== slug) {
+    revalidatePath(`/${existing.slug}`);
+  }
+  return { success: true, message: `Saved "${name}".`, slug };
+}
+
+export async function adminDeleteBusinessAction(
+  _prev: BusinessDeleteState,
+  formData: FormData,
+): Promise<BusinessDeleteState> {
+  const { user, isAdmin } = await assertAdmin();
+  if (!user || !isAdmin) {
+    return { success: false, message: 'Admin access required.' };
+  }
+  const admin = createAdminClient();
+
+  const id = ((formData.get('id') as string) || '').trim();
+  if (!id) return { success: false, message: 'Missing business id.' };
+
+  const { data: biz } = await admin
+    .from('businesses')
+    .select('id, slug, hero_images')
+    .eq('id', id)
+    .maybeSingle();
+  if (!biz) return { success: false, message: 'That business no longer exists.' };
+
+  // Pull service image URLs so we can also clean up storage best-effort.
+  const { data: services } = await admin
+    .from('services')
+    .select('image_url')
+    .eq('business_id', id);
+
+  // Remove storage files (best effort — never block the delete).
+  const pathsToRemove: string[] = [];
+  const heroes: string[] = Array.isArray(biz.hero_images)
+    ? (biz.hero_images as string[]).filter(Boolean)
+    : [];
+  for (const url of heroes) {
+    const p = pathFromPublicUrl(url);
+    if (p) pathsToRemove.push(p);
+  }
+  for (const svc of services || []) {
+    const url = (svc as { image_url: string | null }).image_url;
+    if (url) {
+      const p = pathFromPublicUrl(url);
+      if (p) pathsToRemove.push(p);
+    }
+  }
+  if (pathsToRemove.length > 0) {
+    await admin.storage.from(STORAGE_BUCKET).remove(pathsToRemove);
+  }
+
+  // Delete dependent rows explicitly (works whether or not FKs cascade).
+  await admin.from('bookings').delete().eq('business_id', id);
+  await admin.from('inquiries').delete().eq('business_id', id);
+  await admin.from('payment_settings').delete().eq('business_id', id);
+  await admin.from('services').delete().eq('business_id', id);
+
+  const { error } = await admin.from('businesses').delete().eq('id', id);
+  if (error) return { success: false, message: error.message };
+
+  revalidatePath('/admin');
+  revalidatePath('/admin/businesses');
+  if (biz.slug) revalidatePath(`/${biz.slug}`);
+  return { success: true, message: 'Business deleted.' };
+}

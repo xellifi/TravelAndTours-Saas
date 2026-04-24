@@ -7,14 +7,15 @@ type Props = {
   children: ReactNode;
   pendingText?: string;
   className?: string;
+  disabled?: boolean;
 };
 
-export default function SubmitButton({ children, pendingText, className = '' }: Props) {
+export default function SubmitButton({ children, pendingText, className = '', disabled = false }: Props) {
   const { pending } = useFormStatus();
   return (
     <button
       type="submit"
-      disabled={pending}
+      disabled={pending || disabled}
       aria-busy={pending}
       className={`${className} inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity`}
     >

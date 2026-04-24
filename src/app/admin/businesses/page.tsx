@@ -1,8 +1,29 @@
 import { createAdminClient } from '@/utils/supabase/admin';
 import Link from 'next/link';
 import CloneBusinessDialog from '../CloneBusinessDialog';
+import AddBusinessDialog from '../AddBusinessDialog';
+import EditBusinessDialog from '../EditBusinessDialog';
+import DeleteBusinessButton from '../DeleteBusinessButton';
 
 export const dynamic = 'force-dynamic';
+
+const TEMPLATES = [
+  { id: 'travel', name: 'Travel & Tours' },
+  { id: 'restaurant', name: 'Restaurant / Food' },
+  { id: 'fitness', name: 'Fitness / Gym' },
+  { id: 'salon', name: 'Beauty / Salon' },
+  { id: 'corporate', name: 'Corporate / Services' },
+];
+
+type BusinessRow = {
+  id: string;
+  name: string;
+  slug: string;
+  owner_id: string;
+  template_id: string | null;
+  created_at: string | null;
+  users: { email: string | null; full_name: string | null } | null;
+};
 
 export default async function AdminBusinessesPage() {
   // Service-role client bypasses RLS — safe here because the parent admin layout
@@ -19,9 +40,8 @@ export default async function AdminBusinessesPage() {
     admin.from('users').select('id, email, full_name'),
   ]);
 
-  const ownerIds = new Set(
-    (businesses || []).map((b: { owner_id: string | null }) => b.owner_id),
-  );
+  const rows = (businesses || []) as unknown as BusinessRow[];
+  const ownerIds = new Set(rows.map((b) => b.owner_id));
   const eligibleUsers = (allUsers || []).filter((u) => !ownerIds.has(u.id));
 
   return (
@@ -32,17 +52,23 @@ export default async function AdminBusinessesPage() {
             All Businesses
           </h1>
           <p className="text-gray-500 mt-1 text-sm">
-            Every landing page on the platform. Clone any to a new owner in one click.
+            Every landing page on the platform. Add, edit, clone or remove any of them.
           </p>
         </div>
-        <span className="text-sm text-gray-400 font-bold">
-          {businesses?.length || 0} total
-        </span>
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-gray-400 font-bold">
+            {rows.length} total
+          </span>
+          <AddBusinessDialog
+            eligibleUsers={eligibleUsers}
+            templates={TEMPLATES}
+          />
+        </div>
       </div>
 
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left min-w-[640px]">
+          <table className="w-full text-left min-w-[760px]">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 sm:px-8 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
@@ -63,7 +89,7 @@ export default async function AdminBusinessesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {businesses?.map((biz: any) => (
+              {rows.map((biz) => (
                 <tr
                   key={biz.id}
                   className="hover:bg-gray-50/50 transition-colors"
@@ -99,7 +125,19 @@ export default async function AdminBusinessesPage() {
                       : '—'}
                   </td>
                   <td className="px-4 sm:px-8 py-4 sm:py-5">
-                    <div className="flex items-center justify-end gap-3 sm:gap-5">
+                    <div className="flex items-center justify-end gap-3 sm:gap-4 flex-wrap">
+                      <EditBusinessDialog
+                        business={{
+                          id: biz.id,
+                          name: biz.name,
+                          slug: biz.slug,
+                          template_id: biz.template_id,
+                          owner_id: biz.owner_id,
+                        }}
+                        ownerEmail={biz.users?.email || null}
+                        eligibleUsers={eligibleUsers}
+                        templates={TEMPLATES}
+                      />
                       <CloneBusinessDialog
                         sourceId={biz.id}
                         sourceName={biz.name}
@@ -113,6 +151,11 @@ export default async function AdminBusinessesPage() {
                       >
                         View <i className="fas fa-external-link-alt text-xs"></i>
                       </Link>
+                      <DeleteBusinessButton
+                        businessId={biz.id}
+                        businessName={biz.name}
+                        businessSlug={biz.slug}
+                      />
                     </div>
                   </td>
                 </tr>
@@ -120,10 +163,10 @@ export default async function AdminBusinessesPage() {
             </tbody>
           </table>
         </div>
-        {(!businesses || businesses.length === 0) && (
+        {rows.length === 0 && (
           <div className="p-12 sm:p-16 text-center text-gray-400">
             <i className="fas fa-building text-4xl mb-4 block opacity-20"></i>
-            No businesses registered yet.
+            No businesses registered yet. Use “New Business” above to add one.
           </div>
         )}
       </div>
