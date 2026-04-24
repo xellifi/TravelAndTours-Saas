@@ -30,9 +30,56 @@ export default async function BookingsView() {
     revalidatePath('/dashboard/bookings');
   }
 
+  const hasBookings = (bookings?.length ?? 0) > 0;
+
   return (
     <div>
-      <h1 className="text-3xl font-extrabold text-gray-900 mb-8">Manage Bookings</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <h1 className="text-3xl font-extrabold text-gray-900">Manage Bookings</h1>
+        {hasBookings ? (
+          <a
+            href="/dashboard/bookings/export"
+            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-gray-900 text-white hover:bg-gray-700 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+              />
+            </svg>
+            Export CSV
+          </a>
+        ) : (
+          <span
+            aria-disabled
+            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-gray-100 text-gray-400 cursor-not-allowed"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+              />
+            </svg>
+            Export CSV
+          </span>
+        )}
+      </div>
 
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         <table className="w-full text-left">
