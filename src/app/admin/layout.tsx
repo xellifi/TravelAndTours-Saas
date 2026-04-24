@@ -2,8 +2,15 @@ import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import AdminNav from './AdminNav';
+import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'mywebpages Admin',
+  manifest: '/admin/manifest.webmanifest',
+  appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Admin' },
+};
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();

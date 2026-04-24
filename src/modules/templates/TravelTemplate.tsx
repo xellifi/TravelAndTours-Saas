@@ -21,7 +21,7 @@ export default function TravelTemplate({
   paymentSettings,
 }: TravelTemplateProps) {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -37,19 +37,33 @@ export default function TravelTemplate({
       .querySelectorAll('.reveal')
       .forEach((el) => revealObserver.observe(el));
 
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActiveSection(e.target.id);
+        });
+      },
+      { threshold: 0.3, rootMargin: '0px 0px -50% 0px' },
+    );
+    ['home', 'services', 'about', 'book', 'contact'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) sectionObserver.observe(el);
+    });
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
       revealObserver.disconnect();
+      sectionObserver.disconnect();
     };
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Services', href: '#services' },
-    { name: 'About', href: '#about' },
-    { name: 'Book', href: '#book' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', href: '#home', icon: 'fa-house' },
+    { name: 'Services', href: '#services', icon: 'fa-compass' },
+    { name: 'About', href: '#about', icon: 'fa-circle-info' },
+    { name: 'Book', href: '#book', icon: 'fa-calendar-check' },
+    { name: 'Contact', href: '#contact', icon: 'fa-envelope' },
   ];
 
   const heroImage = business.logo_url || '/images/hero.png';
@@ -58,7 +72,7 @@ export default function TravelTemplate({
     : [];
 
   return (
-    <div className="font-sans text-gray-800 antialiased bg-white overflow-x-hidden">
+    <div className="font-sans text-gray-800 antialiased bg-white overflow-x-hidden pb-16 md:pb-0">
       {/* Navigation */}
       <nav
         id="navbar"
@@ -67,10 +81,10 @@ export default function TravelTemplate({
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex justify-between items-center h-14 sm:h-20">
             <div className="flex items-center">
-              <a href="#" className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden">
+              <a href="#home" className="flex items-center gap-2.5">
+                <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden flex-shrink-0">
                   <Image
                     src={business.logo_url || '/images/logo.jpg'}
                     alt={`${business.name} Logo`}
@@ -80,15 +94,13 @@ export default function TravelTemplate({
                     priority
                   />
                 </div>
-                <div className="hidden sm:block">
-                  <h1
-                    className={`font-bold text-lg leading-tight transition-colors ${
-                      isScrolled ? 'text-gray-800' : 'text-white'
-                    }`}
-                  >
-                    {business.name}
-                  </h1>
-                </div>
+                <h1
+                  className={`font-bold text-sm sm:text-lg leading-tight transition-colors ${
+                    isScrolled ? 'text-gray-800' : 'text-white'
+                  }`}
+                >
+                  {business.name}
+                </h1>
               </a>
             </div>
 
@@ -116,42 +128,49 @@ export default function TravelTemplate({
               )}
             </div>
 
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className={`p-2 transition-colors ${
-                  isScrolled ? 'text-gray-800' : 'text-white'
+            {/* Mobile CTA — top right (desktop uses inline nav) */}
+            {business.phone && (
+              <a
+                href={`tel:${business.phone}`}
+                className={`md:hidden p-2 transition-colors ${
+                  isScrolled ? 'text-primary-600' : 'text-white'
                 }`}
-                aria-label="Open menu"
+                aria-label="Call us"
               >
-                <i
-                  className={`fas ${
-                    isMobileMenuOpen ? 'fa-times' : 'fa-bars'
-                  } text-xl`}
-                />
-              </button>
-            </div>
+                <i className="fas fa-phone text-lg" />
+              </a>
+            )}
           </div>
         </div>
+      </nav>
 
-        {/* Mobile Menu */}
-        <div
-          className={`md:hidden bg-white/95 backdrop-blur-lg border-t border-gray-100 transition-all duration-300 overflow-hidden ${
-            isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-          }`}
-        >
-          <div className="px-4 pt-2 pb-6 space-y-1">
-            {navLinks.map((link) => (
+      {/* Bottom Tab Bar — mobile only */}
+      <nav
+        className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-100 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <div className="flex">
+          {navLinks.map((tab) => {
+            const sectionId = tab.href.slice(1);
+            const isActive = activeSection === sectionId;
+            return (
               <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-3 text-gray-800 font-medium hover:bg-primary-50 rounded-lg"
+                key={tab.name}
+                href={tab.href}
+                className={`flex-1 flex flex-col items-center justify-center pt-2 pb-1.5 gap-0.5 transition-colors active:scale-95 ${
+                  isActive ? 'text-primary-600' : 'text-gray-400'
+                }`}
               >
-                {link.name}
+                <i className={`fas ${tab.icon} text-[17px] transition-transform ${isActive ? 'scale-110' : ''}`} />
+                <span className={`text-[9px] font-bold tracking-tight ${isActive ? 'text-primary-600' : 'text-gray-400'}`}>
+                  {tab.name}
+                </span>
+                {isActive && (
+                  <span className="absolute bottom-0 w-8 h-0.5 bg-primary-500 rounded-full hidden" />
+                )}
               </a>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </nav>
 
@@ -161,61 +180,61 @@ export default function TravelTemplate({
         className="relative min-h-screen flex items-center mesh-bg hero-pattern overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-14 sm:py-40 w-full">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-10 sm:py-40 w-full">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left reveal active">
-              <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-xs font-semibold uppercase tracking-widest mb-6">
+              <span className="inline-block px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-[10px] sm:text-xs font-semibold uppercase tracking-widest mb-4 sm:mb-6">
                 Welcome to {business.name}
               </span>
 
-              {/* Mobile-only hero slideshow — shown after the business name, hidden on desktop */}
-              <div className="block lg:hidden mb-6">
+              {/* Mobile-only hero slideshow */}
+              <div className="block lg:hidden mb-4 sm:mb-6">
                 <HeroSlideshow
                   images={heroImages}
                   fallback={heroImage}
-                  className="h-56 sm:h-72"
+                  className="h-48 sm:h-64"
                 />
               </div>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white leading-tight mb-5 sm:mb-6">
+              <h1 className="text-[28px] sm:text-5xl lg:text-7xl font-bold text-white leading-tight mb-4 sm:mb-6">
                 Your Journey
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-300 to-accent-500">
                   Begins Here
                 </span>
               </h1>
-              <p className="text-base sm:text-xl text-white/80 mb-7 sm:mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-sm sm:text-xl text-white/80 mb-5 sm:mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 {business.tagline ||
                   `Discover the world with ${business.name}. We craft unforgettable travel experiences tailored just for you.`}
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
+              <div className="flex flex-row gap-2.5 sm:gap-4 justify-center lg:justify-start">
                 <a
                   href="#book"
-                  className="btn-primary px-8 py-4 rounded-full text-white font-semibold text-lg inline-flex items-center justify-center gap-3"
+                  className="btn-primary flex-1 sm:flex-none px-5 sm:px-8 py-3 sm:py-4 rounded-full text-white font-semibold text-sm sm:text-lg inline-flex items-center justify-center gap-2"
                 >
                   <i className="fas fa-calendar-alt" /> Book Now
                 </a>
                 <a
                   href="#services"
-                  className="btn-secondary px-8 py-4 rounded-full text-white font-semibold text-lg inline-flex items-center justify-center gap-3"
+                  className="btn-secondary flex-1 sm:flex-none px-5 sm:px-8 py-3 sm:py-4 rounded-full text-white font-semibold text-sm sm:text-lg inline-flex items-center justify-center gap-2"
                 >
-                  <i className="fas fa-compass" /> Explore Services
+                  <i className="fas fa-compass" /> Explore
                 </a>
               </div>
 
               {/* Trust strip */}
-              <div className="mt-8 sm:mt-12 grid grid-cols-3 gap-3 sm:gap-4 max-w-md mx-auto lg:mx-0">
+              <div className="mt-5 sm:mt-12 grid grid-cols-3 gap-2 sm:gap-4 max-w-xs sm:max-w-md mx-auto lg:mx-0">
                 <div className="text-center lg:text-left">
-                  <p className="text-2xl sm:text-3xl font-bold text-white">500+</p>
-                  <p className="text-xs text-white/70 uppercase tracking-wider">Happy Clients</p>
+                  <p className="text-xl sm:text-3xl font-bold text-white">500+</p>
+                  <p className="text-[10px] sm:text-xs text-white/70 uppercase tracking-wide">Happy Clients</p>
                 </div>
                 <div className="text-center lg:text-left">
-                  <p className="text-2xl sm:text-3xl font-bold text-white">50+</p>
-                  <p className="text-xs text-white/70 uppercase tracking-wider">Destinations</p>
+                  <p className="text-xl sm:text-3xl font-bold text-white">50+</p>
+                  <p className="text-[10px] sm:text-xs text-white/70 uppercase tracking-wide">Destinations</p>
                 </div>
                 <div className="text-center lg:text-left">
-                  <p className="text-2xl sm:text-3xl font-bold text-white">5★</p>
-                  <p className="text-xs text-white/70 uppercase tracking-wider">Rated</p>
+                  <p className="text-xl sm:text-3xl font-bold text-white">5★</p>
+                  <p className="text-[10px] sm:text-xs text-white/70 uppercase tracking-wide">Rated</p>
                 </div>
               </div>
             </div>
@@ -629,7 +648,7 @@ const ServiceCard = ({
   delay?: string;
 }) => (
   <div
-    className="group relative h-[420px] rounded-3xl overflow-hidden reveal shadow-lg card-hover bg-gray-100"
+    className="group relative h-60 sm:h-[380px] rounded-3xl overflow-hidden reveal shadow-lg card-hover bg-gray-100"
     style={{ transitionDelay: delay }}
   >
     <Image
