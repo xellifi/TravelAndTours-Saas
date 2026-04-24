@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
+import AdminNav from './AdminNav';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -42,6 +43,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </form>
           </div>
         </div>
+
+        {/* Sub Nav */}
+        <AdminNav />
       </header>
 
       <main className="max-w-7xl mx-auto px-8 py-10">
