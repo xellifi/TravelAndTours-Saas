@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import BookingForm from '@/modules/landing/BookingForm';
 import InquiryForm from '@/modules/landing/InquiryForm';
+import HeroSlideshow from '@/modules/templates/HeroSlideshow';
 import { formatPriceRange } from '@/lib/format';
 
 interface TravelTemplateProps {
@@ -52,6 +53,9 @@ export default function TravelTemplate({
   ];
 
   const heroImage = business.logo_url || '/images/hero.png';
+  const heroImages: string[] = Array.isArray(business.hero_images)
+    ? business.hero_images.filter(Boolean)
+    : [];
 
   return (
     <div className="font-sans text-gray-800 antialiased bg-white">
@@ -209,18 +213,8 @@ export default function TravelTemplate({
             {/* RIGHT-SIDE HERO VISUAL */}
             <div className="hidden lg:block reveal active">
               <div className="relative">
-                {/* Big featured image */}
-                <div className="relative h-[520px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl ring-1 ring-white/20">
-                  <Image
-                    src={heroImage}
-                    alt="Featured"
-                    fill
-                    sizes="(max-width: 1024px) 0vw, 50vw"
-                    className="object-cover"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                </div>
+                {/* Big featured image (rotates between owner-uploaded photos) */}
+                <HeroSlideshow images={heroImages} fallback={heroImage} />
 
                 {/* Floating stat card — top right */}
                 <div className="absolute -top-6 -right-6 bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-3 max-w-[220px] float-anim">

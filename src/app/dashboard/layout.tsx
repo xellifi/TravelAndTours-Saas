@@ -26,6 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const menuItems = [
     { name: 'Overview', href: '/dashboard', icon: 'fa-chart-pie' },
     { name: 'Services', href: '/dashboard/services', icon: 'fa-list' },
+    { name: 'Main Page Images', href: '/dashboard/hero-images', icon: 'fa-images' },
     { name: 'Bookings', href: '/dashboard/bookings', icon: 'fa-calendar-check' },
     { name: 'Inquiries', href: '/dashboard/inquiries', icon: 'fa-envelope-open-text' },
     { name: 'Business Settings', href: '/dashboard/settings', icon: 'fa-building' },

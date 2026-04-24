@@ -62,6 +62,11 @@ The schema lives in Supabase. Migrations checked into the repo as `.sql` files:
   `price_max` to `services`. Run this before redeploying so the new service
   card design has data to display. Backward compatible: old `price` column is
   still populated by the dashboard form.
+- `hero_images_migration.sql` — adds `hero_images TEXT[]` to `businesses`.
+  Used by `/dashboard/hero-images` (max 5 photos, 100&nbsp;KB each, uploaded
+  to the public `images` bucket) and rendered by `HeroSlideshow` in
+  `TravelTemplate` with a clockwise rotation animation defined in
+  `globals.css` (`hero-spin-in` / `hero-spin-out`).
 
 > **Run new migrations in the Supabase SQL editor.**
 
