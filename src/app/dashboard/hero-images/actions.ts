@@ -9,7 +9,7 @@ export type HeroImagesState = {
   message: string;
 } | null;
 
-const MAX_UPLOAD_BYTES = 100 * 1024;
+const MAX_UPLOAD_BYTES = 250 * 1024;
 const STORAGE_BUCKET = 'images';
 
 function extensionFromMime(mime: string): string {

@@ -6,7 +6,7 @@ import Alert from '@/components/Alert';
 import { addHeroImageAction, type HeroImagesState } from './actions';
 import { MAX_HERO_IMAGES } from './constants';
 
-const MAX_UPLOAD_BYTES = 100 * 1024;
+const MAX_UPLOAD_BYTES = 250 * 1024;
 
 type Props = {
   remainingSlots: number;
@@ -57,7 +57,7 @@ export default function AddHeroImageForm({ remainingSlots }: Props) {
       }
       if (file.size > MAX_UPLOAD_BYTES) {
         const kb = Math.round(file.size / 1024);
-        setFileError(`"${file.name}" is ${kb} KB. The limit is 100 KB each.`);
+        setFileError(`"${file.name}" is ${kb} KB. The limit is 250 KB each.`);
         e.target.value = '';
         setSelectedCount(0);
         return;
@@ -117,7 +117,7 @@ export default function AddHeroImageForm({ remainingSlots }: Props) {
           <p className="text-xs text-red-600 mt-2">{fileError}</p>
         ) : (
           <p className="text-xs text-gray-500 mt-2 leading-relaxed">
-            <strong>Max file size:</strong> 100&nbsp;KB each. JPG, PNG, or WebP.
+            <strong>Max file size:</strong> 250&nbsp;KB each. JPG, PNG, or WebP.
             <br />
             <strong>Recommended size:</strong> 1024&nbsp;×&nbsp;1024&nbsp;px (square).
             <br />
