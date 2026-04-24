@@ -120,6 +120,143 @@ export async function addServiceAction(
   return { success: true, message: 'Service added.' };
 }
 
+function pathFromPublicUrl(publicUrl: string): string | null {
+  const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
+  const i = publicUrl.indexOf(marker);
+  if (i === -1) return null;
+  return publicUrl.slice(i + marker.length);
+}
+
+export async function updateServiceAction(
+  _prev: ServiceFormState,
+  formData: FormData,
+): Promise<ServiceFormState> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, message: 'Please log in again.' };
+
+  const id = (formData.get('id') as string) || '';
+  if (!id) return { success: false, message: 'Missing service id.' };
+
+  const { data: business } = await supabase
+    .from('businesses')
+    .select('id')
+    .eq('owner_id', user.id)
+    .maybeSingle();
+
+  if (!business) {
+    return { success: false, message: 'Please create your business first.' };
+  }
+
+  // Make sure the service belongs to this owner before touching it.
+  const { data: existing } = await supabase
+    .from('services')
+    .select('id, image_url, business_id')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (!existing || existing.business_id !== business.id) {
+    return { success: false, message: 'Service not found.' };
+  }
+
+  const name = (formData.get('name') as string)?.trim();
+  if (!name) return { success: false, message: 'Service name is required.' };
+
+  const description = ((formData.get('description') as string) || '').trim();
+  const priceMin = parseOptionalNumber(formData.get('price_min'));
+  const priceMax = parseOptionalNumber(formData.get('price_max'));
+
+  if (priceMin !== null && priceMax !== null && priceMax < priceMin) {
+    return {
+      success: false,
+      message: 'The "to" price must be greater than or equal to the "from" price.',
+    };
+  }
+
+  // image_mode: 'keep' | 'url' | 'upload'
+  const imageMode = (formData.get('image_mode') as string) || 'keep';
+  let imageUrl: string | null = existing.image_url || null;
+  let oldUploadedUrlToDelete: string | null = null;
+
+  if (imageMode === 'url') {
+    const newUrl = ((formData.get('image_url') as string) || '').trim() || null;
+    if (newUrl !== existing.image_url && existing.image_url) {
+      oldUploadedUrlToDelete = existing.image_url;
+    }
+    imageUrl = newUrl;
+  } else if (imageMode === 'upload') {
+    const file = formData.get('image_file');
+    if (file instanceof File && file.size > 0) {
+      if (!file.type.startsWith('image/')) {
+        return { success: false, message: 'Please upload an image file.' };
+      }
+      if (file.size > MAX_UPLOAD_BYTES) {
+        const kb = Math.round(file.size / 1024);
+        return {
+          success: false,
+          message: `That image is ${kb} KB. The limit is 100 KB.`,
+        };
+      }
+
+      const ext = extensionFromMime(file.type);
+      const path = `services/${business.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from(STORAGE_BUCKET)
+        .upload(path, file, {
+          contentType: file.type,
+          upsert: false,
+        });
+
+      if (uploadError) {
+        return { success: false, message: `Upload failed: ${uploadError.message}` };
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from(STORAGE_BUCKET)
+        .getPublicUrl(path);
+      imageUrl = publicUrlData.publicUrl;
+      if (existing.image_url && existing.image_url !== imageUrl) {
+        oldUploadedUrlToDelete = existing.image_url;
+      }
+    }
+  } else if (imageMode === 'remove') {
+    if (existing.image_url) {
+      oldUploadedUrlToDelete = existing.image_url;
+    }
+    imageUrl = null;
+  }
+
+  const legacyPrice = priceMin ?? priceMax ?? 0;
+
+  const { error } = await supabase
+    .from('services')
+    .update({
+      name,
+      description,
+      image_url: imageUrl,
+      price_min: priceMin,
+      price_max: priceMax,
+      price: legacyPrice,
+    })
+    .eq('id', id);
+
+  if (error) {
+    return { success: false, message: error.message };
+  }
+
+  // Clean up the previous uploaded file in storage (only if it was hosted in our bucket).
+  if (oldUploadedUrlToDelete) {
+    const oldPath = pathFromPublicUrl(oldUploadedUrlToDelete);
+    if (oldPath) {
+      await supabase.storage.from(STORAGE_BUCKET).remove([oldPath]);
+    }
+  }
+
+  revalidatePath('/dashboard/services');
+  return { success: true, message: 'Service updated.' };
+}
+
 export async function deleteServiceAction(formData: FormData): Promise<void> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -128,6 +265,30 @@ export async function deleteServiceAction(formData: FormData): Promise<void> {
   const id = formData.get('id') as string;
   if (!id) return;
 
+  // Look up the image so we can also clean it up from storage.
+  const { data: existing } = await supabase
+    .from('services')
+    .select('image_url, business_id')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (existing) {
+    const { data: business } = await supabase
+      .from('businesses')
+      .select('id')
+      .eq('owner_id', user.id)
+      .maybeSingle();
+    if (!business || business.id !== existing.business_id) return;
+  }
+
   await supabase.from('services').delete().eq('id', id);
+
+  if (existing?.image_url) {
+    const path = pathFromPublicUrl(existing.image_url);
+    if (path) {
+      await supabase.storage.from(STORAGE_BUCKET).remove([path]);
+    }
+  }
+
   revalidatePath('/dashboard/services');
 }
