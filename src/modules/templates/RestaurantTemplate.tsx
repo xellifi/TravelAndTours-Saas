@@ -66,6 +66,15 @@ export default function RestaurantTemplate({ business, services, bookingLimitRea
               {business.address && <p><i className="fas fa-map-marker-alt text-amber-600 mr-2"></i>{business.address}</p>}
               {business.phone && <p><a href={`tel:${business.phone}`} className="hover:text-amber-500 transition-colors"><i className="fas fa-phone text-amber-600 mr-2"></i>{business.phone}</a></p>}
               {business.email && <p><a href={`mailto:${business.email}`} className="hover:text-amber-500 transition-colors"><i className="fas fa-envelope text-amber-600 mr-2"></i>{business.email}</a></p>}
+              {business.operating_hours && (
+                <p>
+                  <i className="fas fa-clock text-amber-600 mr-2"></i>
+                  {business.operating_hours}
+                  {business.operating_hours_note && (
+                    <span className="block text-sm opacity-80 mt-0.5 ml-6">{business.operating_hours_note}</span>
+                  )}
+                </p>
+              )}
             </div>
             {(() => {
               const links = readSocialLinks(business.social_links);

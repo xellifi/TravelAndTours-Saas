@@ -61,6 +61,15 @@ export function SalonTemplate({ business, services, bookingLimitReached, payment
               {business.address && <p><i className="fas fa-map-marker-alt text-[#c5a48a] mr-2"></i>{business.address}</p>}
               {business.phone && <p><a href={`tel:${business.phone}`} className="hover:text-[#c5a48a] transition-colors"><i className="fas fa-phone text-[#c5a48a] mr-2"></i>{business.phone}</a></p>}
               {business.email && <p><a href={`mailto:${business.email}`} className="hover:text-[#c5a48a] transition-colors"><i className="fas fa-envelope text-[#c5a48a] mr-2"></i>{business.email}</a></p>}
+              {business.operating_hours && (
+                <p>
+                  <i className="fas fa-clock text-[#c5a48a] mr-2"></i>
+                  {business.operating_hours}
+                  {business.operating_hours_note && (
+                    <span className="block text-sm opacity-80 mt-0.5 ml-6">{business.operating_hours_note}</span>
+                  )}
+                </p>
+              )}
             </div>
             {(() => {
               const links = readSocialLinks(business.social_links);
@@ -145,6 +154,15 @@ export function CorporateTemplate({ business, services, bookingLimitReached, pay
                  {business.address && <p><i className="fas fa-map-marker-alt text-blue-400 mr-2"></i>{business.address}</p>}
                  {business.phone && <p><a href={`tel:${business.phone}`} className="hover:text-blue-400 transition-colors"><i className="fas fa-phone text-blue-400 mr-2"></i>{business.phone}</a></p>}
                  {business.email && <p><a href={`mailto:${business.email}`} className="hover:text-blue-400 transition-colors"><i className="fas fa-envelope text-blue-400 mr-2"></i>{business.email}</a></p>}
+                 {business.operating_hours && (
+                   <p>
+                     <i className="fas fa-clock text-blue-400 mr-2"></i>
+                     {business.operating_hours}
+                     {business.operating_hours_note && (
+                       <span className="block text-sm opacity-80 mt-0.5 ml-6">{business.operating_hours_note}</span>
+                     )}
+                   </p>
+                 )}
                </div>
                {(() => {
                  const links = readSocialLinks(business.social_links);
