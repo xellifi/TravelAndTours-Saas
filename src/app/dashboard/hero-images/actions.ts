@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { requireActiveBusiness, type BusinessRow } from '@/lib/activeBusiness';
 import { MAX_HERO_IMAGES } from './constants';
 
 export type HeroImagesState = {
@@ -27,36 +28,27 @@ function pathFromPublicUrl(publicUrl: string): string | null {
   return publicUrl.slice(i + marker.length);
 }
 
-async function getOwnedBusiness() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { supabase, user: null, business: null };
-
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('id, slug, hero_images')
-    .eq('owner_id', user.id)
-    .maybeSingle();
-
-  return { supabase, user, business };
+function existingHeroes(business: BusinessRow): string[] {
+  return Array.isArray(business.hero_images)
+    ? business.hero_images.filter(Boolean)
+    : [];
 }
 
 export async function addHeroImageAction(
   _prev: HeroImagesState,
   formData: FormData,
 ): Promise<HeroImagesState> {
-  const { supabase, user, business } = await getOwnedBusiness();
-  if (!user) return { success: false, message: 'Please log in again.' };
-  if (!business) {
-    return { success: false, message: 'Please create your business first.' };
+  const ctx = await requireActiveBusiness();
+  if (!ctx) {
+    return {
+      success: false,
+      message: 'Please create or pick a business first.',
+    };
   }
+  const { business } = ctx;
+  const supabase = await createClient();
 
-  const existing: string[] = Array.isArray(business.hero_images)
-    ? business.hero_images.filter(Boolean)
-    : [];
-
+  const existing = existingHeroes(business);
   if (existing.length >= MAX_HERO_IMAGES) {
     return {
       success: false,
@@ -156,15 +148,15 @@ export async function addHeroImageAction(
 }
 
 export async function deleteHeroImageAction(formData: FormData): Promise<void> {
-  const { supabase, user, business } = await getOwnedBusiness();
-  if (!user || !business) return;
+  const ctx = await requireActiveBusiness();
+  if (!ctx) return;
+  const { business } = ctx;
+  const supabase = await createClient();
 
   const url = (formData.get('url') as string) || '';
   if (!url) return;
 
-  const existing: string[] = Array.isArray(business.hero_images)
-    ? business.hero_images.filter(Boolean)
-    : [];
+  const existing = existingHeroes(business);
   const next = existing.filter((u) => u !== url);
 
   await supabase

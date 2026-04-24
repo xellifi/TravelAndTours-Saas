@@ -1,38 +1,32 @@
 'use client';
 
-import { useActionState, useEffect, useMemo, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import SubmitButton from '@/components/SubmitButton';
 import Alert from '@/components/Alert';
-import { createBusinessAction, type BusinessFormState } from './actions';
-
-type UserOption = {
-  id: string;
-  email: string | null;
-  full_name: string | null;
-};
+import {
+  updateOwnerBusinessAction,
+  type OwnerBusinessFormState,
+} from './actions';
 
 type Template = { id: string; name: string };
 
 type Props = {
-  eligibleUsers: UserOption[];
+  business: {
+    id: string;
+    name: string;
+    slug: string;
+    template_id: string | null;
+  };
   templates: Template[];
 };
 
-export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
+export default function EditBusinessDialog({ business, templates }: Props) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const [state, formAction] = useActionState<BusinessFormState, FormData>(
-    createBusinessAction,
+  const [state, formAction] = useActionState<OwnerBusinessFormState, FormData>(
+    updateOwnerBusinessAction,
     null,
-  );
-
-  const sortedUsers = useMemo(
-    () =>
-      [...eligibleUsers].sort((a, b) =>
-        (a.email || '').localeCompare(b.email || ''),
-      ),
-    [eligibleUsers],
   );
 
   useEffect(() => {
@@ -40,7 +34,7 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
       const t = setTimeout(() => {
         setOpen(false);
         router.refresh();
-      }, 1000);
+      }, 900);
       return () => clearTimeout(t);
     }
   }, [state, router]);
@@ -50,9 +44,9 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-bold hover:bg-primary-700 transition-all shadow-sm"
+        className="inline-flex items-center gap-1.5 text-blue-600 font-bold text-sm hover:underline"
       >
-        <i className="fas fa-plus text-xs"></i> New Business
+        <i className="fas fa-pen text-xs"></i> Edit
       </button>
 
       {open && (
@@ -64,9 +58,15 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
         >
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="px-7 py-5 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
-              <h2 className="text-xl font-extrabold text-gray-900">
-                Add New Business
-              </h2>
+              <div>
+                <h2 className="text-xl font-extrabold text-gray-900">
+                  Edit Business
+                </h2>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  <span className="font-bold">{business.name}</span>{' '}
+                  <span className="text-gray-300">/{business.slug}</span>
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -78,38 +78,9 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
             </div>
 
             <form action={formAction} className="px-7 py-6 space-y-5">
-              <Alert state={state} />
+              <input type="hidden" name="id" value={business.id} />
 
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
-                  Owner <span className="text-red-500">*</span>
-                </label>
-                {sortedUsers.length === 0 ? (
-                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
-                    No users on the platform yet.
-                  </div>
-                ) : (
-                  <select
-                    name="owner_id"
-                    required
-                    defaultValue=""
-                    className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
-                  >
-                    <option value="" disabled>
-                      Pick a user…
-                    </option>
-                    {sortedUsers.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.email || u.id}
-                        {u.full_name ? ` — ${u.full_name}` : ''}
-                      </option>
-                    ))}
-                  </select>
-                )}
-                <p className="text-xs text-gray-500 mt-2">
-                  Owners can have any number of businesses.
-                </p>
-              </div>
+              <Alert state={state} />
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
@@ -118,8 +89,8 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
                 <input
                   name="name"
                   required
+                  defaultValue={business.name}
                   className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
-                  placeholder="e.g. Sunshine Travel"
                 />
               </div>
 
@@ -132,13 +103,10 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
                   <input
                     name="slug"
                     required
+                    defaultValue={business.slug}
                     className="flex-1 p-4 pl-0 bg-transparent outline-none"
-                    placeholder="sunshine-travel"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  Letters, numbers and dashes only. Must be unique.
-                </p>
               </div>
 
               <div>
@@ -147,7 +115,7 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
                 </label>
                 <select
                   name="template_id"
-                  defaultValue="travel"
+                  defaultValue={business.template_id || 'travel'}
                   className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
                 >
                   {templates.map((t) => (
@@ -167,10 +135,10 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
                   Cancel
                 </button>
                 <SubmitButton
-                  pendingText="Creating…"
+                  pendingText="Saving…"
                   className="flex-1 btn-primary py-3 rounded-xl text-white font-bold"
                 >
-                  Create Business
+                  Save Changes
                 </SubmitButton>
               </div>
             </form>

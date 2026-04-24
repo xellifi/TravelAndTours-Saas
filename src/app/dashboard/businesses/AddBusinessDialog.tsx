@@ -1,38 +1,30 @@
 'use client';
 
-import { useActionState, useEffect, useMemo, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import SubmitButton from '@/components/SubmitButton';
 import Alert from '@/components/Alert';
-import { createBusinessAction, type BusinessFormState } from './actions';
-
-type UserOption = {
-  id: string;
-  email: string | null;
-  full_name: string | null;
-};
+import {
+  createOwnerBusinessAction,
+  type OwnerBusinessFormState,
+} from './actions';
 
 type Template = { id: string; name: string };
 
 type Props = {
-  eligibleUsers: UserOption[];
   templates: Template[];
+  variant?: 'default' | 'large';
 };
 
-export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
+export default function AddBusinessDialog({
+  templates,
+  variant = 'default',
+}: Props) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const [state, formAction] = useActionState<BusinessFormState, FormData>(
-    createBusinessAction,
+  const [state, formAction] = useActionState<OwnerBusinessFormState, FormData>(
+    createOwnerBusinessAction,
     null,
-  );
-
-  const sortedUsers = useMemo(
-    () =>
-      [...eligibleUsers].sort((a, b) =>
-        (a.email || '').localeCompare(b.email || ''),
-      ),
-    [eligibleUsers],
   );
 
   useEffect(() => {
@@ -40,19 +32,24 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
       const t = setTimeout(() => {
         setOpen(false);
         router.refresh();
-      }, 1000);
+      }, 900);
       return () => clearTimeout(t);
     }
   }, [state, router]);
+
+  const triggerClass =
+    variant === 'large'
+      ? 'inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary-600 text-white text-sm sm:text-base font-bold hover:bg-primary-700 transition-all shadow-md shadow-primary-100'
+      : 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-bold hover:bg-primary-700 transition-all shadow-sm';
 
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-bold hover:bg-primary-700 transition-all shadow-sm"
+        className={triggerClass}
       >
-        <i className="fas fa-plus text-xs"></i> New Business
+        <i className="fas fa-plus text-xs"></i> Add Business
       </button>
 
       {open && (
@@ -65,7 +62,7 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="px-7 py-5 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
               <h2 className="text-xl font-extrabold text-gray-900">
-                Add New Business
+                Add a New Business
               </h2>
               <button
                 type="button"
@@ -79,37 +76,6 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
 
             <form action={formAction} className="px-7 py-6 space-y-5">
               <Alert state={state} />
-
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
-                  Owner <span className="text-red-500">*</span>
-                </label>
-                {sortedUsers.length === 0 ? (
-                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
-                    No users on the platform yet.
-                  </div>
-                ) : (
-                  <select
-                    name="owner_id"
-                    required
-                    defaultValue=""
-                    className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
-                  >
-                    <option value="" disabled>
-                      Pick a user…
-                    </option>
-                    {sortedUsers.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.email || u.id}
-                        {u.full_name ? ` — ${u.full_name}` : ''}
-                      </option>
-                    ))}
-                  </select>
-                )}
-                <p className="text-xs text-gray-500 mt-2">
-                  Owners can have any number of businesses.
-                </p>
-              </div>
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
@@ -137,7 +103,7 @@ export default function AddBusinessDialog({ eligibleUsers, templates }: Props) {
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  Letters, numbers and dashes only. Must be unique.
+                  Letters, numbers and dashes only. Must be unique platform-wide.
                 </p>
               </div>
 

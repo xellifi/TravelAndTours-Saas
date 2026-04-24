@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { requireActiveBusiness } from '@/lib/activeBusiness';
 
 export type ActionState = {
   success: boolean;
@@ -19,15 +20,24 @@ function normalizeSlug(input: string): string {
     .replace(/^-|-$/g, '');
 }
 
+/**
+ * Updates the active business. Creating a brand-new business from scratch
+ * happens on /dashboard/businesses now, so this action only updates.
+ */
 export async function updateBusinessAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const ctx = await requireActiveBusiness();
+  if (!ctx) {
+    return {
+      success: false,
+      message:
+        "You don't have a business yet. Create one from My Businesses first.",
+    };
+  }
+  const { business } = ctx;
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { success: false, message: 'You must be signed in.' };
 
   const name = ((formData.get('name') as string) || '').trim();
   const slugRaw = ((formData.get('slug') as string) || '').trim();
@@ -44,30 +54,12 @@ export async function updateBusinessAction(
     };
   }
 
-  const { data: existingBiz } = await supabase
+  const previousSlug = business.slug;
+
+  const { error } = await supabase
     .from('businesses')
-    .select('id')
-    .eq('owner_id', user.id)
-    .maybeSingle();
-
-  const payload = {
-    name,
-    slug,
-    template_id: templateId,
-    owner_id: user.id,
-  };
-
-  let error;
-  if (existingBiz) {
-    const { error: e } = await supabase
-      .from('businesses')
-      .update(payload)
-      .eq('id', existingBiz.id);
-    error = e;
-  } else {
-    const { error: e } = await supabase.from('businesses').insert(payload);
-    error = e;
-  }
+    .update({ name, slug, template_id: templateId })
+    .eq('id', business.id);
 
   if (error) {
     const msg = /duplicate|unique/i.test(error.message)
@@ -76,13 +68,16 @@ export async function updateBusinessAction(
     return { success: false, message: msg };
   }
 
+  revalidatePath('/dashboard', 'layout');
   revalidatePath('/dashboard/settings');
   revalidatePath(`/${slug}`);
+  if (previousSlug && previousSlug !== slug) {
+    revalidatePath(`/${previousSlug}`);
+  }
+
   return {
     success: true,
-    message: existingBiz
-      ? 'Business updated successfully.'
-      : 'Business created! You can now configure payment settings below.',
+    message: 'Business updated successfully.',
     slug,
   };
 }
@@ -91,27 +86,19 @@ export async function updatePaymentSettingsAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { success: false, message: 'You must be signed in.' };
-
-  const { data: biz } = await supabase
-    .from('businesses')
-    .select('id')
-    .eq('owner_id', user.id)
-    .maybeSingle();
-
-  if (!biz) {
+  const ctx = await requireActiveBusiness();
+  if (!ctx) {
     return {
       success: false,
-      message: 'Create your business first, then add payment details.',
+      message:
+        "You don't have a business yet. Create one from My Businesses first.",
     };
   }
+  const { business } = ctx;
+  const supabase = await createClient();
 
   const paymentData = {
-    business_id: biz.id,
+    business_id: business.id,
     gcash_name: ((formData.get('gcash_name') as string) || '').trim(),
     gcash_number: ((formData.get('gcash_number') as string) || '').trim(),
     paymaya_name: ((formData.get('paymaya_name') as string) || '').trim(),

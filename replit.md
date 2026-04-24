@@ -78,8 +78,38 @@ The schema lives in Supabase. Migrations checked into the repo as `.sql` files:
   to the public `images` bucket) and rendered by `HeroSlideshow` in
   `TravelTemplate` with a clockwise rotation animation defined in
   `globals.css` (`hero-spin-in` / `hero-spin-out`).
+- `multi_business_migration.sql` — drops any single-column UNIQUE constraint
+  / unique index on `businesses.owner_id`. Required for the multi-business
+  refactor (one user can own many businesses). Slug uniqueness is
+  preserved. Adds a regular index on `owner_id` for query speed.
 
 > **Run new migrations in the Supabase SQL editor.**
+
+## Multi-business model
+
+A single signed-in user can own any number of businesses. The "active"
+business — the one whose data the dashboard pages show — is tracked in a
+cookie called `mwp_active_business`. Helpers live in
+`src/lib/activeBusiness.ts`:
+
+- `getOwnerBusinesses()` — returns `{ user, businesses, active }`.
+- `requireActiveBusiness()` — convenience for pages/actions that only need
+  the active business; returns `null` when the user has zero businesses.
+
+Dashboard pages and actions (`services`, `bookings`, `inquiries`,
+`hero-images`, `settings`, `bookings/export`) all scope their queries by
+`ctx.business.id` and render an empty-state CTA pointing at
+`/dashboard/businesses` when the user has none.
+
+`/dashboard/businesses` is the canonical place to add, edit, switch, and
+delete businesses. The sidebar and mobile drawer embed
+`<BusinessSwitcher />`, a dropdown that lists every business owned by the
+current user and switches the active cookie via the
+`setActiveBusinessAction` server action.
+
+Admin pages (`/admin/businesses`) likewise no longer enforce one business
+per owner — `eligibleUsers` is now just "all users" and the dialog copy
+reflects that owners can have many businesses.
 
 ### Known Supabase pitfall
 

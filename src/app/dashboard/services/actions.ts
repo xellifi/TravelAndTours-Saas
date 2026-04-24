@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { requireActiveBusiness } from '@/lib/activeBusiness';
 
 export type ServiceFormState = {
   success: boolean;
@@ -27,23 +28,26 @@ function extensionFromMime(mime: string): string {
   return 'bin';
 }
 
+function pathFromPublicUrl(publicUrl: string): string | null {
+  const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
+  const i = publicUrl.indexOf(marker);
+  if (i === -1) return null;
+  return publicUrl.slice(i + marker.length);
+}
+
 export async function addServiceAction(
   _prev: ServiceFormState,
   formData: FormData,
 ): Promise<ServiceFormState> {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { success: false, message: 'Please log in again.' };
-
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('id')
-    .eq('owner_id', user.id)
-    .maybeSingle();
-
-  if (!business) {
-    return { success: false, message: 'Please create your business first.' };
+  const ctx = await requireActiveBusiness();
+  if (!ctx) {
+    return {
+      success: false,
+      message: 'Please create or pick a business first.',
+    };
   }
+  const { business } = ctx;
+  const supabase = await createClient();
 
   const name = (formData.get('name') as string)?.trim();
   if (!name) return { success: false, message: 'Service name is required.' };
@@ -120,35 +124,24 @@ export async function addServiceAction(
   return { success: true, message: 'Service added.' };
 }
 
-function pathFromPublicUrl(publicUrl: string): string | null {
-  const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
-  const i = publicUrl.indexOf(marker);
-  if (i === -1) return null;
-  return publicUrl.slice(i + marker.length);
-}
-
 export async function updateServiceAction(
   _prev: ServiceFormState,
   formData: FormData,
 ): Promise<ServiceFormState> {
+  const ctx = await requireActiveBusiness();
+  if (!ctx) {
+    return {
+      success: false,
+      message: 'Please create or pick a business first.',
+    };
+  }
+  const { business } = ctx;
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { success: false, message: 'Please log in again.' };
 
   const id = (formData.get('id') as string) || '';
   if (!id) return { success: false, message: 'Missing service id.' };
 
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('id')
-    .eq('owner_id', user.id)
-    .maybeSingle();
-
-  if (!business) {
-    return { success: false, message: 'Please create your business first.' };
-  }
-
-  // Make sure the service belongs to this owner before touching it.
+  // Make sure the service belongs to the active business before touching it.
   const { data: existing } = await supabase
     .from('services')
     .select('id, image_url, business_id')
@@ -173,7 +166,7 @@ export async function updateServiceAction(
     };
   }
 
-  // image_mode: 'keep' | 'url' | 'upload'
+  // image_mode: 'keep' | 'url' | 'upload' | 'remove'
   const imageMode = (formData.get('image_mode') as string) || 'keep';
   let imageUrl: string | null = existing.image_url || null;
   let oldUploadedUrlToDelete: string | null = null;
@@ -245,7 +238,6 @@ export async function updateServiceAction(
     return { success: false, message: error.message };
   }
 
-  // Clean up the previous uploaded file in storage (only if it was hosted in our bucket).
   if (oldUploadedUrlToDelete) {
     const oldPath = pathFromPublicUrl(oldUploadedUrlToDelete);
     if (oldPath) {
@@ -258,32 +250,25 @@ export async function updateServiceAction(
 }
 
 export async function deleteServiceAction(formData: FormData): Promise<void> {
+  const ctx = await requireActiveBusiness();
+  if (!ctx) return;
+  const { business } = ctx;
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
 
   const id = formData.get('id') as string;
   if (!id) return;
 
-  // Look up the image so we can also clean it up from storage.
   const { data: existing } = await supabase
     .from('services')
     .select('image_url, business_id')
     .eq('id', id)
     .maybeSingle();
 
-  if (existing) {
-    const { data: business } = await supabase
-      .from('businesses')
-      .select('id')
-      .eq('owner_id', user.id)
-      .maybeSingle();
-    if (!business || business.id !== existing.business_id) return;
-  }
+  if (!existing || existing.business_id !== business.id) return;
 
   await supabase.from('services').delete().eq('id', id);
 
-  if (existing?.image_url) {
+  if (existing.image_url) {
     const path = pathFromPublicUrl(existing.image_url);
     if (path) {
       await supabase.storage.from(STORAGE_BUCKET).remove([path]);

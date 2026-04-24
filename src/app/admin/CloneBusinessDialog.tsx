@@ -94,8 +94,7 @@ export default function CloneBusinessDialog({
                 </label>
                 {sortedUsers.length === 0 ? (
                   <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
-                    No eligible users. Every other user on the platform already
-                    owns a business.
+                    No users on the platform yet.
                   </div>
                 ) : (
                   <select
@@ -116,7 +115,7 @@ export default function CloneBusinessDialog({
                   </select>
                 )}
                 <p className="text-xs text-gray-500 mt-2">
-                  Only users who don&apos;t already own a business are listed.
+                  Owners can have any number of businesses.
                 </p>
               </div>
 

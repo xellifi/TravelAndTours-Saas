@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { requireActiveBusiness } from '@/lib/activeBusiness';
 
 function csvEscape(value: unknown): string {
   if (value === null || value === undefined) return '';
@@ -17,22 +18,12 @@ function formatDate(value: unknown): string {
 }
 
 export async function GET() {
+  const ctx = await requireActiveBusiness();
+  if (!ctx) {
+    return NextResponse.json({ error: 'No active business' }, { status: 404 });
+  }
+  const { business } = ctx;
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('id, name')
-    .eq('owner_id', user.id)
-    .single();
-
-  if (!business) {
-    return NextResponse.json({ error: 'No business found' }, { status: 404 });
-  }
 
   const { data: bookings, error } = await supabase
     .from('bookings')

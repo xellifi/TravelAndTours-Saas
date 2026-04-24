@@ -3,6 +3,8 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import MobileNav from './MobileNav';
+import BusinessSwitcher from './BusinessSwitcher';
+import { getOwnerBusinesses } from '@/lib/activeBusiness';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,11 +20,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   if (!user) redirect('/login');
 
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('*')
-    .eq('owner_id', user.id)
-    .single();
+  const ownerData = await getOwnerBusinesses();
+  const businesses = ownerData?.businesses ?? [];
+  const active = ownerData?.active ?? null;
 
   const { data: profile } = await supabase
     .from('users')
@@ -35,6 +35,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const menuItems = [
     { name: 'Overview', href: '/dashboard', icon: 'fa-chart-pie' },
+    { name: 'My Businesses', href: '/dashboard/businesses', icon: 'fa-store' },
     { name: 'Services', href: '/dashboard/services', icon: 'fa-list' },
     { name: 'Main Page Images', href: '/dashboard/hero-images', icon: 'fa-images' },
     { name: 'Bookings', href: '/dashboard/bookings', icon: 'fa-calendar-check' },
@@ -51,8 +52,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
     { name: 'Inquiries', href: '/dashboard/inquiries', icon: 'fa-envelope-open-text' },
   ];
 
-  const businessForNav = business
-    ? { name: business.name as string, slug: business.slug as string }
+  const businessesForNav = businesses.map((b) => ({
+    id: b.id,
+    name: b.name,
+    slug: b.slug,
+  }));
+  const activeForNav = active
+    ? { id: active.id, name: active.name, slug: active.slug }
     : null;
 
   return (
@@ -62,7 +68,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         menuItems={menuItems}
         bottomItems={bottomItems}
         displayName={displayName}
-        business={businessForNav}
+        active={activeForNav}
+        businesses={businessesForNav}
         isAdmin={isAdmin}
       />
 
@@ -76,12 +83,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </div>
             <span className="font-black text-xl text-gray-900">mywebpages</span>
           </Link>
-          {business && (
-            <div className="mt-4 px-3 py-2.5 bg-primary-50 rounded-xl">
-              <p className="text-xs font-bold text-primary-700 uppercase tracking-widest mb-0.5">Active Page</p>
-              <p className="text-sm font-bold text-gray-800 truncate">{business.name}</p>
-            </div>
-          )}
+          <BusinessSwitcher
+            active={activeForNav}
+            businesses={businessesForNav}
+            layout="sidebar"
+          />
         </div>
 
         {/* Nav */}
@@ -111,9 +117,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         {/* Footer */}
         <div className="p-4 border-t border-gray-100">
-          {business && (
+          {active && (
             <Link
-              href={`/${business.slug}`}
+              href={`/${active.slug}`}
               target="_blank"
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary-50 text-primary-700 font-bold text-xs uppercase tracking-widest hover:bg-primary-100 transition-all mb-3"
             >

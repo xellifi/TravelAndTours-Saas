@@ -41,8 +41,7 @@ export default async function AdminBusinessesPage() {
   ]);
 
   const rows = (businesses || []) as unknown as BusinessRow[];
-  const ownerIds = new Set(rows.map((b) => b.owner_id));
-  const eligibleUsers = (allUsers || []).filter((u) => !ownerIds.has(u.id));
+  const userOptions = allUsers || [];
 
   return (
     <div>
@@ -60,7 +59,7 @@ export default async function AdminBusinessesPage() {
             {rows.length} total
           </span>
           <AddBusinessDialog
-            eligibleUsers={eligibleUsers}
+            eligibleUsers={userOptions}
             templates={TEMPLATES}
           />
         </div>
@@ -135,14 +134,14 @@ export default async function AdminBusinessesPage() {
                           owner_id: biz.owner_id,
                         }}
                         ownerEmail={biz.users?.email || null}
-                        eligibleUsers={eligibleUsers}
+                        eligibleUsers={userOptions}
                         templates={TEMPLATES}
                       />
                       <CloneBusinessDialog
                         sourceId={biz.id}
                         sourceName={biz.name}
                         sourceSlug={biz.slug}
-                        eligibleUsers={eligibleUsers}
+                        eligibleUsers={userOptions}
                       />
                       <Link
                         href={`/${biz.slug}`}

@@ -3,14 +3,17 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import BusinessSwitcher from './BusinessSwitcher';
 
 type MenuItem = { name: string; href: string; icon: string };
+type BusinessLite = { id: string; name: string; slug: string };
 
 type Props = {
   menuItems: MenuItem[];
   bottomItems: MenuItem[];
   displayName: string;
-  business: { name: string; slug: string } | null;
+  active: BusinessLite | null;
+  businesses: BusinessLite[];
   isAdmin: boolean;
 };
 
@@ -18,7 +21,8 @@ export default function MobileNav({
   menuItems,
   bottomItems,
   displayName,
-  business,
+  active,
+  businesses,
   isAdmin,
 }: Props) {
   const pathname = usePathname();
@@ -64,9 +68,9 @@ export default function MobileNav({
             <p className="text-base font-extrabold text-gray-900 truncate leading-tight">
               {activeItem.name}
             </p>
-            {business && (
+            {active && (
               <p className="text-[10px] font-bold text-primary-600 uppercase tracking-wider truncate leading-tight">
-                {business.name}
+                {active.name}
               </p>
             )}
           </div>
@@ -115,20 +119,17 @@ export default function MobileNav({
               <i className="fas fa-times text-lg"></i>
             </button>
           </div>
-          {business && (
-            <div className="mt-4 px-3.5 py-2.5 bg-primary-50 rounded-xl">
-              <p className="text-[10px] font-bold text-primary-700 uppercase tracking-widest mb-0.5">
-                Active Page
-              </p>
-              <p className="text-sm font-bold text-gray-800 truncate">{business.name}</p>
-            </div>
-          )}
+          <BusinessSwitcher
+            active={active}
+            businesses={businesses}
+            layout="drawer"
+          />
         </div>
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">
           {menuItems.map((item) => {
-            const active =
+            const isActive =
               item.href === '/dashboard'
                 ? pathname === '/dashboard'
                 : pathname.startsWith(item.href);
@@ -137,14 +138,14 @@ export default function MobileNav({
                 key={item.href}
                 href={item.href}
                 className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-colors ${
-                  active
+                  isActive
                     ? 'bg-primary-50 text-primary-700'
                     : 'text-gray-700 active:bg-gray-100'
                 }`}
               >
                 <i
                   className={`fas ${item.icon} w-5 text-center text-base ${
-                    active ? 'text-primary-600' : 'text-gray-400'
+                    isActive ? 'text-primary-600' : 'text-gray-400'
                   }`}
                 ></i>
                 <span className="text-[15px] font-semibold">{item.name}</span>
@@ -166,9 +167,9 @@ export default function MobileNav({
 
         {/* Footer */}
         <div className="p-4 border-t border-gray-100 space-y-3" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}>
-          {business && (
+          {active && (
             <Link
-              href={`/${business.slug}`}
+              href={`/${active.slug}`}
               target="_blank"
               className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary-50 text-primary-700 font-bold text-xs uppercase tracking-widest active:bg-primary-100"
             >
@@ -198,7 +199,7 @@ export default function MobileNav({
       >
         <div className="grid grid-cols-4 h-16">
           {bottomItems.slice(0, 3).map((item) => {
-            const active =
+            const isActive =
               item.href === '/dashboard'
                 ? pathname === '/dashboard'
                 : pathname.startsWith(item.href);
@@ -207,7 +208,7 @@ export default function MobileNav({
                 key={item.href}
                 href={item.href}
                 className={`flex flex-col items-center justify-center gap-0.5 ${
-                  active ? 'text-primary-600' : 'text-gray-500'
+                  isActive ? 'text-primary-600' : 'text-gray-500'
                 }`}
               >
                 <i className={`fas ${item.icon} text-[17px]`}></i>

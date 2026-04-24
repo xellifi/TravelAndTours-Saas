@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { createClient } from '@/utils/supabase/server';
+import { requireActiveBusiness } from '@/lib/activeBusiness';
 import AddHeroImageForm from './AddHeroImageForm';
 import { deleteHeroImageAction } from './actions';
 import { MAX_HERO_IMAGES } from './constants';
@@ -8,35 +8,24 @@ import { MAX_HERO_IMAGES } from './constants';
 export const dynamic = 'force-dynamic';
 
 export default async function HeroImagesPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('id, slug, hero_images')
-    .eq('owner_id', user.id)
-    .maybeSingle();
-
-  if (!business) {
+  const ctx = await requireActiveBusiness();
+  if (!ctx) {
     return (
       <div className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 text-center">
-        <p className="text-gray-500">
-          Please create your business first in{' '}
-          <Link
-            href="/dashboard/settings"
-            className="text-primary-600 font-bold hover:underline"
-          >
-            Business Settings
-          </Link>
-          .
+        <p className="text-gray-500 mb-4">
+          You don&apos;t have a business yet.
         </p>
+        <Link
+          href="/dashboard/businesses"
+          className="text-primary-600 font-bold hover:underline"
+        >
+          Create your first business →
+        </Link>
       </div>
     );
   }
 
+  const { business } = ctx;
   const heroImages: string[] = Array.isArray(business.hero_images)
     ? business.hero_images.filter(Boolean)
     : [];
@@ -49,6 +38,8 @@ export default async function HeroImagesPage() {
           Main Page Images
         </h1>
         <p className="text-gray-500 text-sm sm:text-base mt-1 max-w-2xl">
+          Hero photos for{' '}
+          <span className="font-bold text-gray-700">{business.name}</span>.
           Upload up to {MAX_HERO_IMAGES} photos to feature in the hero section
           of your landing page. They&apos;ll rotate automatically.
         </p>

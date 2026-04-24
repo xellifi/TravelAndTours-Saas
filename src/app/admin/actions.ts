@@ -127,19 +127,6 @@ export async function cloneBusinessAction(
     return { success: false, message: 'That user no longer exists.' };
   }
 
-  // Each owner can only have one business in this app.
-  const { data: alreadyOwns } = await admin
-    .from('businesses')
-    .select('id')
-    .eq('owner_id', targetUserId)
-    .maybeSingle();
-  if (alreadyOwns) {
-    return {
-      success: false,
-      message: `${targetUser.email} already owns a business. Reassign or delete it first.`,
-    };
-  }
-
   // Slug must be unique platform-wide.
   const { data: slugTaken } = await admin
     .from('businesses')
@@ -345,18 +332,6 @@ export async function createBusinessAction(
     .maybeSingle();
   if (!targetUser) return { success: false, message: 'That user no longer exists.' };
 
-  const { data: alreadyOwns } = await admin
-    .from('businesses')
-    .select('id')
-    .eq('owner_id', ownerId)
-    .maybeSingle();
-  if (alreadyOwns) {
-    return {
-      success: false,
-      message: `${targetUser.email} already owns a business.`,
-    };
-  }
-
   const { data: slugTaken } = await admin
     .from('businesses')
     .select('id')
@@ -425,7 +400,7 @@ export async function adminUpdateBusinessAction(
     .maybeSingle();
   if (!existing) return { success: false, message: 'That business no longer exists.' };
 
-  // If owner is being changed, make sure the new owner doesn't already have one.
+  // If the owner is being changed, just make sure the new owner exists.
   if (ownerId !== existing.owner_id) {
     const { data: targetUser } = await admin
       .from('users')
@@ -433,19 +408,6 @@ export async function adminUpdateBusinessAction(
       .eq('id', ownerId)
       .maybeSingle();
     if (!targetUser) return { success: false, message: 'That user no longer exists.' };
-
-    const { data: alreadyOwns } = await admin
-      .from('businesses')
-      .select('id')
-      .eq('owner_id', ownerId)
-      .neq('id', id)
-      .maybeSingle();
-    if (alreadyOwns) {
-      return {
-        success: false,
-        message: `${targetUser.email} already owns a business.`,
-      };
-    }
   }
 
   // Slug uniqueness across other businesses.

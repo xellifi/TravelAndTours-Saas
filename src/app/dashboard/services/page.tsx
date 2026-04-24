@@ -1,28 +1,31 @@
+import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
+import { requireActiveBusiness } from '@/lib/activeBusiness';
 import AddServiceForm from './AddServiceForm';
 import ServiceCard from './ServiceCard';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ServicesManagement() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) return null;
-
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('id')
-    .eq('owner_id', user.id)
-    .maybeSingle();
-
-  if (!business) {
+  const ctx = await requireActiveBusiness();
+  if (!ctx) {
     return (
       <div className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 text-center">
-        <p className="text-gray-500">Please create your business first in Settings.</p>
+        <p className="text-gray-500 mb-4">
+          You don&apos;t have a business yet.
+        </p>
+        <Link
+          href="/dashboard/businesses"
+          className="btn-primary px-6 py-3 rounded-xl text-white font-bold inline-block text-sm"
+        >
+          Create your first business
+        </Link>
       </div>
     );
   }
+
+  const { business } = ctx;
+  const supabase = await createClient();
 
   const { data: services } = await supabase
     .from('services')
@@ -35,7 +38,9 @@ export default async function ServicesManagement() {
       <div className="mb-5 sm:mb-8">
         <h1 className="text-xl sm:text-3xl font-extrabold text-gray-900">Manage Services</h1>
         <p className="text-gray-500 text-sm sm:text-base mt-1">
-          Add a photo and a price range so visitors know what to expect.
+          Editing services for{' '}
+          <span className="font-bold text-gray-700">{business.name}</span>. Add a
+          photo and a price range so visitors know what to expect.
         </p>
       </div>
 
