@@ -2,7 +2,7 @@ import { createClient } from '@/utils/supabase/server';
 import { notFound } from 'next/navigation';
 import TemplateRenderer from '@/modules/templates/TemplateRenderer';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function BusinessLandingPage({
   params,

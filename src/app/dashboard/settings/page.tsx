@@ -2,6 +2,8 @@ import { createClient } from '@/utils/supabase/server';
 import BusinessInfoForm from './BusinessInfoForm';
 import PaymentSettingsForm from './PaymentSettingsForm';
 
+export const dynamic = 'force-dynamic';
+
 const TEMPLATES = [
   { id: 'travel', name: 'Travel & Tours' },
   { id: 'restaurant', name: 'Restaurant / Food' },

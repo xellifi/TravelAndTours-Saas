@@ -5,6 +5,8 @@ import AddHeroImageForm from './AddHeroImageForm';
 import { deleteHeroImageAction } from './actions';
 import { MAX_HERO_IMAGES } from './constants';
 
+export const dynamic = 'force-dynamic';
+
 export default async function HeroImagesPage() {
   const supabase = await createClient();
   const {

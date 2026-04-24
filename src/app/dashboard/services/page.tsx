@@ -2,6 +2,8 @@ import { createClient } from '@/utils/supabase/server';
 import AddServiceForm from './AddServiceForm';
 import ServiceCard from './ServiceCard';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ServicesManagement() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

@@ -6,11 +6,11 @@ import { useState } from 'react';
 export default function InquiryForm({ businessId }: { businessId: string }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    const supabase = createClient();
     
     const formData = new FormData(e.currentTarget);
     const data = {

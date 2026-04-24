@@ -2,6 +2,8 @@ import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import CloneBusinessDialog from './CloneBusinessDialog';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
   const supabase = await createClient();
 

@@ -24,7 +24,6 @@ interface BookingFormProps {
 export default function BookingForm({ businessId, services, isLimitReached, paymentSettings }: BookingFormProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const supabase = createClient();
 
   if (isLimitReached) {
     return (
@@ -41,6 +40,7 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    const supabase = createClient();
 
     const formData = new FormData(e.currentTarget);
     const data = {
