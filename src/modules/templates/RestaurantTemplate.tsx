@@ -2,6 +2,8 @@ import React from 'react';
 import Image from 'next/image';
 import BookingForm from '@/modules/landing/BookingForm';
 import InquiryForm from '@/modules/landing/InquiryForm';
+import SocialLinks from '@/components/SocialLinks';
+import { readSocialLinks } from '@/lib/socialPlatforms';
 
 export default function RestaurantTemplate({ business, services, bookingLimitReached, paymentSettings }: any) {
   return (
@@ -54,6 +56,32 @@ export default function RestaurantTemplate({ business, services, bookingLimitRea
             </div>
          </div>
       </section>
+
+      {/* Footer / Contact */}
+      <footer id="contact" className="bg-[#0f0f0f] border-t border-amber-900/30 py-16 px-8">
+         <div className="max-w-4xl mx-auto text-center">
+            <h3 className="text-3xl font-bold mb-3">{business.name}</h3>
+            <div className="w-16 h-0.5 bg-amber-600 mx-auto mb-8"></div>
+            <div className="space-y-2 text-gray-400 text-sm tracking-wide mb-10">
+              {business.address && <p><i className="fas fa-map-marker-alt text-amber-600 mr-2"></i>{business.address}</p>}
+              {business.phone && <p><a href={`tel:${business.phone}`} className="hover:text-amber-500 transition-colors"><i className="fas fa-phone text-amber-600 mr-2"></i>{business.phone}</a></p>}
+              {business.email && <p><a href={`mailto:${business.email}`} className="hover:text-amber-500 transition-colors"><i className="fas fa-envelope text-amber-600 mr-2"></i>{business.email}</a></p>}
+            </div>
+            {(() => {
+              const links = readSocialLinks(business.social_links);
+              if (links.length === 0) return null;
+              return (
+                <div className="border-t border-amber-900/20 pt-8">
+                  <p className="text-amber-600 text-xs uppercase tracking-[0.3em] font-bold mb-5">Connect with us</p>
+                  <div className="flex justify-center">
+                    <SocialLinks links={links} variant="dark" />
+                  </div>
+                </div>
+              );
+            })()}
+            <p className="text-gray-600 text-xs mt-10">© {new Date().getFullYear()} {business.name}. All rights reserved.</p>
+         </div>
+      </footer>
     </div>
   );
 }

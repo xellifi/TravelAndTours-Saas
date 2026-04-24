@@ -2,6 +2,8 @@ import React from 'react';
 import Image from 'next/image';
 import BookingForm from '@/modules/landing/BookingForm';
 import InquiryForm from '@/modules/landing/InquiryForm';
+import SocialLinks from '@/components/SocialLinks';
+import { readSocialLinks } from '@/lib/socialPlatforms';
 
 export function SalonTemplate({ business, services, bookingLimitReached, paymentSettings }: any) {
   return (
@@ -49,6 +51,32 @@ export function SalonTemplate({ business, services, bookingLimitReached, payment
             </div>
          </div>
       </section>
+
+      {/* Footer / Contact */}
+      <footer id="contact" className="bg-[#fdf9f6] border-t border-[#f7ede4] py-16 px-8">
+         <div className="max-w-3xl mx-auto text-center">
+            <h3 className="text-3xl font-light italic mb-2">{business.name}</h3>
+            <div className="w-12 h-0.5 bg-[#c5a48a] mx-auto mb-6"></div>
+            <div className="space-y-1.5 text-sm text-gray-500 mb-10">
+              {business.address && <p><i className="fas fa-map-marker-alt text-[#c5a48a] mr-2"></i>{business.address}</p>}
+              {business.phone && <p><a href={`tel:${business.phone}`} className="hover:text-[#c5a48a] transition-colors"><i className="fas fa-phone text-[#c5a48a] mr-2"></i>{business.phone}</a></p>}
+              {business.email && <p><a href={`mailto:${business.email}`} className="hover:text-[#c5a48a] transition-colors"><i className="fas fa-envelope text-[#c5a48a] mr-2"></i>{business.email}</a></p>}
+            </div>
+            {(() => {
+              const links = readSocialLinks(business.social_links);
+              if (links.length === 0) return null;
+              return (
+                <div className="pt-8 border-t border-[#f7ede4]">
+                  <p className="text-[#c5a48a] text-[10px] uppercase tracking-[0.3em] font-bold mb-5">Connect</p>
+                  <div className="flex justify-center">
+                    <SocialLinks links={links} variant="light" />
+                  </div>
+                </div>
+              );
+            })()}
+            <p className="text-gray-400 text-xs mt-10 italic">© {new Date().getFullYear()} {business.name}. All rights reserved.</p>
+         </div>
+      </footer>
     </div>
   );
 }
@@ -103,7 +131,7 @@ export function CorporateTemplate({ business, services, bookingLimitReached, pay
             <div>
                <h2 className="text-4xl md:text-5xl font-black mb-8">Ready to Optimize?</h2>
                <p className="text-slate-400 text-lg mb-12">Submit your requirements and our lead consultants will analyze your business profile within 24 hours.</p>
-               <div className="space-y-6">
+               <div className="space-y-6 mb-10">
                   <div className="flex gap-4 items-center">
                      <i className="fas fa-check-circle text-blue-500"></i>
                      <span className="font-bold">ISO 27001 Certified Processes</span>
@@ -113,6 +141,21 @@ export function CorporateTemplate({ business, services, bookingLimitReached, pay
                      <span className="font-bold">Strict NDA & Privacy Policies</span>
                   </div>
                </div>
+               <div className="space-y-3 text-slate-300 text-sm">
+                 {business.address && <p><i className="fas fa-map-marker-alt text-blue-400 mr-2"></i>{business.address}</p>}
+                 {business.phone && <p><a href={`tel:${business.phone}`} className="hover:text-blue-400 transition-colors"><i className="fas fa-phone text-blue-400 mr-2"></i>{business.phone}</a></p>}
+                 {business.email && <p><a href={`mailto:${business.email}`} className="hover:text-blue-400 transition-colors"><i className="fas fa-envelope text-blue-400 mr-2"></i>{business.email}</a></p>}
+               </div>
+               {(() => {
+                 const links = readSocialLinks(business.social_links);
+                 if (links.length === 0) return null;
+                 return (
+                   <div className="mt-10 pt-8 border-t border-white/10">
+                     <p className="text-blue-400 text-xs uppercase tracking-[0.3em] font-bold mb-4">Connect</p>
+                     <SocialLinks links={links} variant="dark" />
+                   </div>
+                 );
+               })()}
             </div>
             <div className="bg-white p-10 rounded-3xl text-slate-900">
                <InquiryForm businessId={business.id} />

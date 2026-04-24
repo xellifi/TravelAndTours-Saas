@@ -6,6 +6,8 @@ import BookingForm from '@/modules/landing/BookingForm';
 import InquiryForm from '@/modules/landing/InquiryForm';
 import HeroSlideshow from '@/modules/templates/HeroSlideshow';
 import { formatPriceRange } from '@/lib/format';
+import SocialLinks from '@/components/SocialLinks';
+import { readSocialLinks } from '@/lib/socialPlatforms';
 
 interface TravelTemplateProps {
   business: any;
@@ -568,37 +570,24 @@ export default function TravelTemplate({
                   </a>
                 )}
 
-                <div className="pt-6 border-t border-white/15">
-                  <p className="text-xs uppercase tracking-widest text-primary-200/80 font-semibold mb-3">
-                    Follow us
-                  </p>
-                  <div className="flex gap-3">
-                    {[
-                      { icon: 'fa-facebook-f', href: business.facebook_url },
-                      { icon: 'fa-instagram', href: business.instagram_url },
-                      { icon: 'fa-tiktok', href: business.tiktok_url },
-                    ]
-                      .filter((s) => s.href)
-                      .map((s) => (
-                        <a
-                          key={s.icon}
-                          href={s.href as string}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-10 h-10 rounded-xl bg-white/10 ring-1 ring-white/20 flex items-center justify-center hover:bg-accent-500 hover:ring-accent-500 transition-colors"
-                        >
-                          <i className={`fab ${s.icon}`} />
-                        </a>
-                      ))}
-                    {!business.facebook_url &&
-                      !business.instagram_url &&
-                      !business.tiktok_url && (
+                {(() => {
+                  const links = readSocialLinks(business.social_links);
+                  return (
+                    <div className="pt-6 border-t border-white/15">
+                      <p className="text-xs uppercase tracking-widest text-primary-200/80 font-semibold mb-3">
+                        Follow us
+                      </p>
+                      {links.length > 0 ? (
+                        <SocialLinks links={links} variant="dark" />
+                      ) : (
                         <p className="text-primary-200/70 text-sm">
-                          Add your social links in Settings to show them here.
+                          Add your social links from the dashboard to show them
+                          here.
                         </p>
                       )}
-                  </div>
-                </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
 

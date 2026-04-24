@@ -40,6 +40,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     { name: 'Main Page Images', href: '/dashboard/hero-images', icon: 'fa-images' },
     { name: 'Bookings', href: '/dashboard/bookings', icon: 'fa-calendar-check' },
     { name: 'Inquiries', href: '/dashboard/inquiries', icon: 'fa-envelope-open-text' },
+    { name: 'Social Links', href: '/dashboard/social-links', icon: 'fa-share-nodes' },
     { name: 'Business Settings', href: '/dashboard/settings', icon: 'fa-building' },
     { name: 'Profile', href: '/dashboard/profile', icon: 'fa-user-circle' },
     { name: 'Billing & Plans', href: '/dashboard/billing', icon: 'fa-credit-card' },

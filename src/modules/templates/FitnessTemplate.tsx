@@ -2,6 +2,8 @@ import React from 'react';
 import Image from 'next/image';
 import BookingForm from '@/modules/landing/BookingForm';
 import InquiryForm from '@/modules/landing/InquiryForm';
+import SocialLinks from '@/components/SocialLinks';
+import { readSocialLinks } from '@/lib/socialPlatforms';
 
 export default function FitnessTemplate({ business, services, bookingLimitReached, paymentSettings }: any) {
   return (
@@ -42,6 +44,34 @@ export default function FitnessTemplate({ business, services, bookingLimitReache
             </div>
          </div>
       </section>
+
+      {/* Footer / Contact */}
+      <footer id="contact" className="bg-black text-white py-14 px-8 border-t-4 border-primary-600">
+         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-10 items-start">
+            <div className="md:col-span-2">
+               <h3 className="text-3xl font-black italic uppercase mb-3">{business.name}</h3>
+               <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-6">Train Hard. Stay Strong.</p>
+               <div className="space-y-2 text-gray-300 text-sm">
+                 {business.address && <p><i className="fas fa-location-dot text-primary-500 mr-2"></i>{business.address}</p>}
+                 {business.phone && <p><a href={`tel:${business.phone}`} className="hover:text-primary-500 transition-colors"><i className="fas fa-phone text-primary-500 mr-2"></i>{business.phone}</a></p>}
+                 {business.email && <p><a href={`mailto:${business.email}`} className="hover:text-primary-500 transition-colors"><i className="fas fa-envelope text-primary-500 mr-2"></i>{business.email}</a></p>}
+               </div>
+            </div>
+            <div>
+              {(() => {
+                const links = readSocialLinks(business.social_links);
+                if (links.length === 0) return null;
+                return (
+                  <div>
+                    <p className="text-primary-500 text-xs uppercase tracking-[0.3em] font-black mb-4">Follow the grind</p>
+                    <SocialLinks links={links} variant="dark" />
+                  </div>
+                );
+              })()}
+            </div>
+         </div>
+         <p className="text-gray-600 text-xs uppercase tracking-widest text-center mt-12 font-bold">© {new Date().getFullYear()} {business.name}</p>
+      </footer>
     </div>
   );
 }

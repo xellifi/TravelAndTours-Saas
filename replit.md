@@ -82,6 +82,14 @@ The schema lives in Supabase. Migrations checked into the repo as `.sql` files:
   / unique index on `businesses.owner_id`. Required for the multi-business
   refactor (one user can own many businesses). Slug uniqueness is
   preserved. Adds a regular index on `owner_id` for query speed.
+- `social_links_migration.sql` — adds `social_links JSONB DEFAULT '[]'` to
+  `businesses`. Each item: `{ id, platform, url }`. Owner CRUD lives at
+  `/dashboard/social-links` (uses `requireActiveBusiness` and reads/writes the
+  whole JSON array via server actions). Rendered by every template's contact
+  section through `<SocialLinks>` (`src/components/SocialLinks.tsx`). Platform
+  catalogue + `readSocialLinks` / `normalizeUrl` helpers live in
+  `src/lib/socialPlatforms.ts`. The admin clone action copies the column for
+  free because it spreads all non-identity fields from the source row.
 
 > **Run new migrations in the Supabase SQL editor.**
 
