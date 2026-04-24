@@ -512,7 +512,18 @@ export default function TravelTemplate({
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 reveal">
+          <div className="max-w-3xl mx-auto space-y-8 reveal">
+            {/* Inquiry form card */}
+            <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-[2.5rem] shadow-xl p-5 sm:p-10">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                Send us a message
+              </h3>
+              <p className="text-gray-500 mb-5 sm:mb-8 text-sm sm:text-base">
+                We typically reply within one business day.
+              </p>
+              <InquiryForm businessId={business.id} />
+            </div>
+
             {/* Contact info card */}
             <div className="bg-gradient-to-br from-primary-700 to-primary-900 text-white rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-10 relative overflow-hidden">
               <div
@@ -589,17 +600,6 @@ export default function TravelTemplate({
                   );
                 })()}
               </div>
-            </div>
-
-            {/* Inquiry form card */}
-            <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-[2.5rem] shadow-xl p-5 sm:p-10">
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                Send us a message
-              </h3>
-              <p className="text-gray-500 mb-5 sm:mb-8 text-sm sm:text-base">
-                We typically reply within one business day.
-              </p>
-              <InquiryForm businessId={business.id} />
             </div>
           </div>
         </div>
