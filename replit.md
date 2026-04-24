@@ -38,6 +38,17 @@ Replit secrets used at build & runtime:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` — server-only; required by `src/utils/supabase/admin.ts` (`createAdminClient()`) for admin pages and admin server actions. Bypasses RLS. Never imported from a client component. Must also be set in Vercel.
+
+## Admin pages & RLS
+
+The `public.users` table has RLS that only lets a user read their own row.
+Admin pages (`/admin`, `/admin/users`, `/admin/businesses`) therefore use
+`createAdminClient()` (service-role) for SELECT queries instead of the SSR
+client. This is safe because `src/app/admin/layout.tsx` redirects any
+non-admin to `/dashboard` before these pages render. The `public.users`
+table also has an `email` column (mirrored from `auth.users` on signup) that
+the admin pages select directly.
 
 `next.config.ts` derives the Supabase hostname from `NEXT_PUBLIC_SUPABASE_URL`
 to allow `next/image` to optimize images served from Supabase Storage.

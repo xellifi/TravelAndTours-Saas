@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import AddUserForm from './AddUserForm';
 import UserRow from './UserRow';
 
@@ -10,12 +11,15 @@ export default async function AdminUsersPage() {
     data: { user: currentUser },
   } = await supabase.auth.getUser();
 
+  // Service-role client bypasses RLS — safe here because the parent admin layout
+  // already redirects non-admins away before this page renders.
+  const admin = createAdminClient();
   const [{ data: users }, { data: businesses }] = await Promise.all([
-    supabase
+    admin
       .from('users')
       .select('id, email, full_name, role, created_at')
       .order('created_at', { ascending: false }),
-    supabase.from('businesses').select('id, name, slug, owner_id'),
+    admin.from('businesses').select('id, name, slug, owner_id'),
   ]);
 
   const businessByOwner = new Map(

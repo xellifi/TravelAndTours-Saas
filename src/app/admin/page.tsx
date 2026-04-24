@@ -1,11 +1,13 @@
-import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import Link from 'next/link';
 import CloneBusinessDialog from './CloneBusinessDialog';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  const supabase = await createClient();
+  // Service-role client bypasses RLS — safe here because the parent admin layout
+  // already redirects non-admins away before this page renders.
+  const admin = createAdminClient();
 
   const [
     { data: businesses },
@@ -14,15 +16,15 @@ export default async function AdminDashboard() {
     { count: inquiriesCount },
     { data: allUsers },
   ] = await Promise.all([
-    supabase
+    admin
       .from('businesses')
       .select(
         'id, name, slug, owner_id, template_id, created_at, users(email)',
       ),
-    supabase.from('users').select('id', { count: 'exact', head: true }),
-    supabase.from('bookings').select('id', { count: 'exact', head: true }),
-    supabase.from('inquiries').select('id', { count: 'exact', head: true }),
-    supabase.from('users').select('id, email, full_name'),
+    admin.from('users').select('id', { count: 'exact', head: true }),
+    admin.from('bookings').select('id', { count: 'exact', head: true }),
+    admin.from('inquiries').select('id', { count: 'exact', head: true }),
+    admin.from('users').select('id, email, full_name'),
   ]);
 
   const ownerIds = new Set(

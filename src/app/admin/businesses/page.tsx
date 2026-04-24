@@ -1,20 +1,22 @@
-import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import Link from 'next/link';
 import CloneBusinessDialog from '../CloneBusinessDialog';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminBusinessesPage() {
-  const supabase = await createClient();
+  // Service-role client bypasses RLS — safe here because the parent admin layout
+  // already redirects non-admins away before this page renders.
+  const admin = createAdminClient();
 
   const [{ data: businesses }, { data: allUsers }] = await Promise.all([
-    supabase
+    admin
       .from('businesses')
       .select(
         'id, name, slug, owner_id, template_id, created_at, users(email, full_name)',
       )
       .order('created_at', { ascending: false }),
-    supabase.from('users').select('id, email, full_name'),
+    admin.from('users').select('id, email, full_name'),
   ]);
 
   const ownerIds = new Set(
