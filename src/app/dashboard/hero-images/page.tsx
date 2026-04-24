@@ -2,7 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 import AddHeroImageForm from './AddHeroImageForm';
-import { deleteHeroImageAction, MAX_HERO_IMAGES } from './actions';
+import { deleteHeroImageAction } from './actions';
+import { MAX_HERO_IMAGES } from './constants';
 
 export default async function HeroImagesPage() {
   const supabase = await createClient();

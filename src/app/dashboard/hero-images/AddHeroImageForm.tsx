@@ -3,11 +3,8 @@
 import { useActionState, useEffect, useRef, useState } from 'react';
 import SubmitButton from '@/components/SubmitButton';
 import Alert from '@/components/Alert';
-import {
-  addHeroImageAction,
-  MAX_HERO_IMAGES,
-  type HeroImagesState,
-} from './actions';
+import { addHeroImageAction, type HeroImagesState } from './actions';
+import { MAX_HERO_IMAGES } from './constants';
 
 const MAX_UPLOAD_BYTES = 100 * 1024;
 

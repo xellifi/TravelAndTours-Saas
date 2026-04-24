@@ -2,13 +2,13 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { MAX_HERO_IMAGES } from './constants';
 
 export type HeroImagesState = {
   success: boolean;
   message: string;
 } | null;
 
-export const MAX_HERO_IMAGES = 5;
 const MAX_UPLOAD_BYTES = 100 * 1024;
 const STORAGE_BUCKET = 'images';
 
