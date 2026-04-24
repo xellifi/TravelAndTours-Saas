@@ -7,12 +7,14 @@ type Props = {
   images: string[];
   fallback: string;
   intervalMs?: number;
+  className?: string;
 };
 
 export default function HeroSlideshow({
   images,
   fallback,
   intervalMs = 5000,
+  className,
 }: Props) {
   const slides = images.length > 0 ? images : [fallback];
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -33,7 +35,7 @@ export default function HeroSlideshow({
   const currentSrc = slides[currentIndex];
 
   return (
-    <div className="relative h-[520px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl ring-1 ring-white/20 bg-primary-900/40">
+    <div className={`relative w-full rounded-[2.5rem] overflow-hidden shadow-2xl ring-1 ring-white/20 bg-primary-900/40 ${className ?? 'h-[520px]'}`}>
       {previousSrc && previousSrc !== currentSrc && (
         <div
           key={`prev-${previousSrc}-${currentIndex}`}
@@ -43,7 +45,7 @@ export default function HeroSlideshow({
             src={previousSrc}
             alt=""
             fill
-            sizes="(max-width: 1024px) 0vw, 50vw"
+            sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover"
           />
         </div>
@@ -57,7 +59,7 @@ export default function HeroSlideshow({
           src={currentSrc}
           alt="Featured"
           fill
-          sizes="(max-width: 1024px) 0vw, 50vw"
+          sizes="(max-width: 1024px) 100vw, 50vw"
           className="object-cover"
           priority={currentIndex === 0}
         />

@@ -167,6 +167,16 @@ export default function TravelTemplate({
               <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-xs font-semibold uppercase tracking-widest mb-6">
                 Welcome to {business.name}
               </span>
+
+              {/* Mobile-only hero slideshow — shown after the business name, hidden on desktop */}
+              <div className="block lg:hidden mb-6">
+                <HeroSlideshow
+                  images={heroImages}
+                  fallback={heroImage}
+                  className="h-56 sm:h-72"
+                />
+              </div>
+
               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-tight mb-6">
                 Your Journey
                 <br />
