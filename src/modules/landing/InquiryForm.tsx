@@ -48,16 +48,16 @@ export default function InquiryForm({ businessId }: { businessId: string }) {
       <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2 uppercase">Full Name</label>
-           <input name="name" required className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm sm:text-base" />
+           <input name="name" required className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-gray-300 focus:border-primary-500 outline-none transition-all text-sm sm:text-base" />
         </div>
         <div>
            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2 uppercase">Email Address</label>
-           <input name="email" type="email" required className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm sm:text-base" />
+           <input name="email" type="email" required className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-gray-300 focus:border-primary-500 outline-none transition-all text-sm sm:text-base" />
         </div>
       </div>
       <div>
          <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2 uppercase">Message</label>
-         <textarea name="message" required rows={4} className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all resize-none text-sm sm:text-base"></textarea>
+         <textarea name="message" required rows={4} className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-gray-300 focus:border-primary-500 outline-none transition-all resize-none text-sm sm:text-base"></textarea>
       </div>
       <button 
         type="submit" 
