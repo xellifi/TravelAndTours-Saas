@@ -8,12 +8,23 @@ export type ServiceFormState = {
   message: string;
 } | null;
 
+const MAX_UPLOAD_BYTES = 100 * 1024;
+const STORAGE_BUCKET = 'images';
+
 function parseOptionalNumber(raw: FormDataEntryValue | null): number | null {
   if (raw === null) return null;
   const s = String(raw).trim();
   if (s === '') return null;
   const n = Number(s);
   return isNaN(n) ? null : n;
+}
+
+function extensionFromMime(mime: string): string {
+  if (mime === 'image/jpeg' || mime === 'image/jpg') return 'jpg';
+  if (mime === 'image/png') return 'png';
+  if (mime === 'image/webp') return 'webp';
+  if (mime === 'image/gif') return 'gif';
+  return 'bin';
 }
 
 export async function addServiceAction(
@@ -38,7 +49,6 @@ export async function addServiceAction(
   if (!name) return { success: false, message: 'Service name is required.' };
 
   const description = ((formData.get('description') as string) || '').trim();
-  const imageUrl = ((formData.get('image_url') as string) || '').trim() || null;
   const priceMin = parseOptionalNumber(formData.get('price_min'));
   const priceMax = parseOptionalNumber(formData.get('price_max'));
 
@@ -47,6 +57,46 @@ export async function addServiceAction(
       success: false,
       message: 'The "to" price must be greater than or equal to the "from" price.',
     };
+  }
+
+  let imageUrl: string | null = null;
+  const imageMode = (formData.get('image_mode') as string) || 'url';
+
+  if (imageMode === 'upload') {
+    const file = formData.get('image_file');
+    if (file instanceof File && file.size > 0) {
+      if (!file.type.startsWith('image/')) {
+        return { success: false, message: 'Please upload an image file.' };
+      }
+      if (file.size > MAX_UPLOAD_BYTES) {
+        const kb = Math.round(file.size / 1024);
+        return {
+          success: false,
+          message: `That image is ${kb} KB. The limit is 100 KB.`,
+        };
+      }
+
+      const ext = extensionFromMime(file.type);
+      const path = `services/${business.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from(STORAGE_BUCKET)
+        .upload(path, file, {
+          contentType: file.type,
+          upsert: false,
+        });
+
+      if (uploadError) {
+        return { success: false, message: `Upload failed: ${uploadError.message}` };
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from(STORAGE_BUCKET)
+        .getPublicUrl(path);
+      imageUrl = publicUrlData.publicUrl;
+    }
+  } else {
+    imageUrl = ((formData.get('image_url') as string) || '').trim() || null;
   }
 
   // Keep the legacy `price` column populated so older code paths don't break.
