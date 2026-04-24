@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "mywebpages — Build Your Business Website in Minutes",
-  description: "mywebpages is a multi-tenant SaaS platform for travel agencies, restaurants, gyms, and more. Create beautiful landing pages, manage bookings, and grow your business today.",
+  description:
+    "mywebpages is a multi-tenant SaaS platform for travel agencies, restaurants, gyms, and more. Create beautiful landing pages, manage bookings, and grow your business today.",
 };
 
 export default function RootLayout({
@@ -12,14 +21,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className={`h-full antialiased ${inter.variable}`}>
       <head>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className={`${inter.className} min-h-full flex flex-col`}>
         {children}
       </body>
     </html>

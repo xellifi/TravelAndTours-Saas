@@ -43,12 +43,12 @@
 @layer utilities {
   .mesh-bg {
     background-color: #134e4a;
-    background-image: 
-      linear-gradient(rgba(19, 78, 74, 0.7), rgba(19, 78, 74, 0.7)),
+    background-image:
+      linear-gradient(rgba(19, 78, 74, 0.78), rgba(19, 78, 74, 0.78)),
       url('/images/hero.png');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+    /* background-attachment: fixed removed — caused major repaint cost on scroll */
   }
 
   .glass-nav {

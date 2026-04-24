@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/client';
 import { useState } from 'react';
+import { formatPriceRange } from '@/lib/format';
 
 interface PaymentSettings {
   gcash_name?: string;
@@ -180,11 +181,15 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
             className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all appearance-none"
           >
             <option value="">Choose a service...</option>
-            {services.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name} — ₱{s.price}
-              </option>
-            ))}
+            {services.map((s) => {
+              const label = formatPriceRange(s.price_min, s.price_max, s.price);
+              return (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                  {label ? ` — ${label}` : ''}
+                </option>
+              );
+            })}
           </select>
         </div>
         <div>

@@ -1,5 +1,8 @@
+import Image from 'next/image';
 import { createClient } from '@/utils/supabase/server';
-import { revalidatePath } from 'next/cache';
+import { deleteServiceAction } from './actions';
+import AddServiceForm from './AddServiceForm';
+import { formatPriceRange } from '@/lib/format';
 
 export default async function ServicesManagement() {
   const supabase = await createClient();
@@ -11,78 +14,98 @@ export default async function ServicesManagement() {
     .from('businesses')
     .select('id')
     .eq('owner_id', user.id)
-    .single();
+    .maybeSingle();
 
-  if (!business) return <p>Please create a business first.</p>;
-
-  const businessId = business.id;
+  if (!business) {
+    return (
+      <div className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 text-center">
+        <p className="text-gray-500">Please create your business first in Settings.</p>
+      </div>
+    );
+  }
 
   const { data: services } = await supabase
     .from('services')
     .select('*')
-    .eq('business_id', businessId);
-
-  async function addService(formData: FormData) {
-    'use server';
-    const supabase = await createClient();
-    const name = formData.get('name') as string;
-    const price = parseFloat(formData.get('price') as string);
-    const description = formData.get('description') as string;
-
-    await supabase.from('services').insert({
-      business_id: businessId,
-      name,
-      price,
-      description
-    });
-    revalidatePath('/dashboard/services');
-  }
-
-  async function deleteService(formData: FormData) {
-    'use server';
-    const supabase = await createClient();
-    const id = formData.get('id') as string;
-    await supabase.from('services').delete().eq('id', id);
-    revalidatePath('/dashboard/services');
-  }
+    .eq('business_id', business.id)
+    .order('created_at', { ascending: true });
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold text-gray-900 mb-8">Manage Services</h1>
+      <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-900">Manage Services</h1>
+          <p className="text-gray-500 mt-1">
+            Add a photo and a price range so visitors know what to expect.
+          </p>
+        </div>
+      </div>
 
-      <div className="grid lg:grid-cols-3 gap-10">
+      <div className="grid lg:grid-cols-3 gap-10 items-start">
         <div className="lg:col-span-2 space-y-4">
-          {services?.length === 0 ? (
+          {!services || services.length === 0 ? (
             <div className="p-12 border-2 border-dashed border-gray-200 rounded-3xl text-center text-gray-400">
-                No services added yet.
+              No services yet. Add your first one on the right.
             </div>
           ) : (
-            services?.map((service) => (
-              <div key={service.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-                <div>
-                  <h3 className="font-bold text-lg">{service.name}</h3>
-                  <p className="text-sm text-gray-500">{service.description}</p>
-                  <p className="text-primary-600 font-bold mt-1">₱{service.price}</p>
+            services.map((service) => {
+              const priceLabel = formatPriceRange(
+                service.price_min,
+                service.price_max,
+                service.price,
+              );
+              return (
+                <div
+                  key={service.id}
+                  className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-5"
+                >
+                  <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+                    {service.image_url ? (
+                      <Image
+                        src={service.image_url}
+                        alt={service.name}
+                        fill
+                        sizes="80px"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-300 text-2xl">
+                        <i className="fas fa-image" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-lg text-gray-900 truncate">
+                      {service.name}
+                    </h3>
+                    {service.description && (
+                      <p className="text-sm text-gray-500 line-clamp-2">
+                        {service.description}
+                      </p>
+                    )}
+                    {priceLabel && (
+                      <p className="text-primary-600 font-bold mt-1">{priceLabel}</p>
+                    )}
+                  </div>
+
+                  <form action={deleteServiceAction}>
+                    <input type="hidden" name="id" value={service.id} />
+                    <button
+                      className="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center"
+                      aria-label={`Delete ${service.name}`}
+                    >
+                      <i className="fas fa-trash" />
+                    </button>
+                  </form>
                 </div>
-                <form action={deleteService}>
-                  <input type="hidden" name="id" value={service.id} />
-                  <button className="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all">
-                    <i className="fas fa-trash"></i>
-                  </button>
-                </form>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
         <div>
-          <form action={addService} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 space-y-6">
-            <h2 className="text-xl font-bold mb-4">Add New Service</h2>
-            <input name="name" required placeholder="Service Name" className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none" />
-            <input name="price" type="number" step="0.01" required placeholder="Price" className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none" />
-            <textarea name="description" placeholder="Short description" className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none h-32"></textarea>
-            <button className="w-full btn-primary py-4 rounded-xl text-white font-bold">Add Service</button>
-          </form>
+          <AddServiceForm />
         </div>
       </div>
     </div>
