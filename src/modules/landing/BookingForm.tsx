@@ -149,36 +149,36 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid sm:grid-cols-2 gap-6">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+      <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Your Name</label>
+          <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2 uppercase tracking-wide">Your Name</label>
           <input
             name="name"
             required
-            className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm sm:text-base"
             placeholder="Juan Dela Cruz"
           />
         </div>
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Email Address</label>
+          <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2 uppercase tracking-wide">Email Address</label>
           <input
             name="email"
             type="email"
             required
-            className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm sm:text-base"
             placeholder="juan@example.com"
           />
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-6">
+      <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Select Service</label>
+          <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2 uppercase tracking-wide">Select Service</label>
           <select
             name="service_id"
             required
-            className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all appearance-none"
+            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all appearance-none text-sm sm:text-base"
           >
             <option value="">Choose a service...</option>
             {services.map((s) => {
@@ -193,12 +193,12 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
           </select>
         </div>
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Preferred Date & Time</label>
+          <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2 uppercase tracking-wide">Preferred Date & Time</label>
           <input
             name="date"
             type="datetime-local"
             required
-            className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm sm:text-base"
           />
         </div>
       </div>
@@ -206,7 +206,7 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
       <button
         type="submit"
         disabled={loading}
-        className="w-full btn-primary py-5 rounded-2xl text-white font-bold text-lg shadow-xl disabled:opacity-50"
+        className="w-full btn-primary py-3.5 sm:py-5 rounded-2xl text-white font-bold text-base sm:text-lg shadow-xl disabled:opacity-50"
       >
         {loading ? 'Submitting...' : 'Request Booking'}{' '}
         <i className="fas fa-chevron-right ml-2 text-sm"></i>

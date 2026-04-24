@@ -58,7 +58,7 @@ export default function TravelTemplate({
     : [];
 
   return (
-    <div className="font-sans text-gray-800 antialiased bg-white">
+    <div className="font-sans text-gray-800 antialiased bg-white overflow-x-hidden">
       {/* Navigation */}
       <nav
         id="navbar"
@@ -161,7 +161,7 @@ export default function TravelTemplate({
         className="relative min-h-screen flex items-center mesh-bg hero-pattern overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 sm:py-40 w-full">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-14 sm:py-40 w-full">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left reveal active">
               <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-xs font-semibold uppercase tracking-widest mb-6">
@@ -177,18 +177,18 @@ export default function TravelTemplate({
                 />
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-tight mb-6">
+              <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white leading-tight mb-5 sm:mb-6">
                 Your Journey
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-300 to-accent-500">
                   Begins Here
                 </span>
               </h1>
-              <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-base sm:text-xl text-white/80 mb-7 sm:mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 {business.tagline ||
                   `Discover the world with ${business.name}. We craft unforgettable travel experiences tailored just for you.`}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
                 <a
                   href="#book"
                   className="btn-primary px-8 py-4 rounded-full text-white font-semibold text-lg inline-flex items-center justify-center gap-3"
@@ -204,7 +204,7 @@ export default function TravelTemplate({
               </div>
 
               {/* Trust strip */}
-              <div className="mt-12 grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0">
+              <div className="mt-8 sm:mt-12 grid grid-cols-3 gap-3 sm:gap-4 max-w-md mx-auto lg:mx-0">
                 <div className="text-center lg:text-left">
                   <p className="text-2xl sm:text-3xl font-bold text-white">500+</p>
                   <p className="text-xs text-white/70 uppercase tracking-wider">Happy Clients</p>
@@ -260,9 +260,9 @@ export default function TravelTemplate({
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-24 bg-gray-50">
+      <section id="services" className="py-12 sm:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16 reveal">
+          <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16 reveal">
             <span className="text-accent-600 font-semibold text-sm uppercase tracking-wider">
               What We Offer
             </span>
@@ -305,21 +305,21 @@ export default function TravelTemplate({
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-24 bg-white">
+      <section id="about" className="py-12 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="reveal">
               <span className="text-accent-600 font-semibold text-sm uppercase tracking-wider">
                 About Us
               </span>
-              <h2 className="text-4xl font-bold text-gray-900 mt-3 mb-6">
+              <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mt-3 mb-4 sm:mb-6">
                 Your Trusted Travel Partner
               </h2>
               <p className="text-gray-500 leading-relaxed mb-6">
                 {business.about ||
                   `${business.name} is dedicated to making your dream trips a reality. With years of experience in crafting personalized travel experiences, we handle everything from flights and hotels to visas and travel insurance.`}
               </p>
-              <div className="grid sm:grid-cols-3 gap-6 mt-10">
+              <div className="grid grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-10">
                 {[
                   { icon: 'fa-plane', label: 'Flight Booking' },
                   { icon: 'fa-hotel', label: 'Hotel Deals' },
@@ -327,7 +327,7 @@ export default function TravelTemplate({
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="text-center p-6 bg-gray-50 rounded-2xl"
+                    className="text-center p-4 sm:p-6 bg-gray-50 rounded-2xl"
                   >
                     <i
                       className={`fas ${item.icon} text-2xl text-primary-600 mb-3 block`}
@@ -355,10 +355,10 @@ export default function TravelTemplate({
       {/* BOOK A SERVICE — standalone section */}
       <section
         id="book"
-        className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden"
+        className="py-12 sm:py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-2xl mx-auto mb-12 reveal">
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 reveal">
             <span className="text-accent-600 font-semibold text-sm uppercase tracking-wider">
               Reserve your spot
             </span>
@@ -371,25 +371,44 @@ export default function TravelTemplate({
             </p>
           </div>
 
-          <div className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-gray-100 reveal">
+          <div className="bg-white rounded-2xl sm:rounded-[3rem] shadow-2xl overflow-hidden border border-gray-100 reveal">
             <div className="grid lg:grid-cols-5">
               {/* LEFT: rich green panel for Book a Service */}
-              <div className="lg:col-span-2 bg-gradient-to-br from-primary-700 to-primary-900 p-8 sm:p-12 text-white relative overflow-hidden">
+              <div className="lg:col-span-2 bg-gradient-to-br from-primary-700 to-primary-900 p-5 sm:p-10 text-white relative overflow-hidden">
                 <div
                   className="absolute inset-0 opacity-10 hero-pattern"
                   aria-hidden
                 />
                 <div className="relative z-10">
-                  <h3 className="text-2xl sm:text-3xl font-bold mb-4">
+                  <h3 className="text-xl sm:text-3xl font-bold mb-3 sm:mb-4">
                     Why book with{' '}
                     <span className="text-accent-400">{business.name}</span>?
                   </h3>
-                  <p className="text-primary-100/80 mb-8 max-w-sm">
+                  <p className="text-primary-100/80 mb-5 sm:mb-8 max-w-sm text-sm sm:text-base">
                     Real people, real itineraries, real support — from the moment
                     you submit a request to the day you come home.
                   </p>
 
-                  <ul className="space-y-5">
+                  {/* Compact icon badges — mobile only */}
+                  <div className="flex flex-wrap gap-2 sm:hidden mb-1">
+                    {[
+                      { icon: 'fa-bolt', label: 'Fast reply' },
+                      { icon: 'fa-shield-alt', label: 'Safe payment' },
+                      { icon: 'fa-headset', label: 'Real support' },
+                      { icon: 'fa-thumbs-up', label: 'Flexible' },
+                    ].map((b) => (
+                      <span
+                        key={b.label}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 ring-1 ring-white/20 text-xs font-semibold"
+                      >
+                        <i className={`fas ${b.icon} text-accent-300 text-xs`} />
+                        {b.label}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Full bullet list — desktop only */}
+                  <ul className="hidden sm:block space-y-5">
                     {[
                       {
                         icon: 'fa-bolt',
@@ -424,7 +443,7 @@ export default function TravelTemplate({
                     ))}
                   </ul>
 
-                  <div className="mt-10 pt-8 border-t border-white/15">
+                  <div className="hidden sm:block mt-10 pt-8 border-t border-white/15">
                     <p className="text-xs uppercase tracking-widest text-primary-200/80 font-semibold mb-2">
                       Operating hours
                     </p>
@@ -437,11 +456,11 @@ export default function TravelTemplate({
               </div>
 
               {/* RIGHT: the booking form only */}
-              <div className="lg:col-span-3 p-8 sm:p-12 md:p-16">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <div className="lg:col-span-3 p-5 sm:p-10 md:p-14">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                   Tell us about your trip
                 </h3>
-                <p className="text-gray-500 mb-8">
+                <p className="text-gray-500 mb-5 sm:mb-8 text-sm sm:text-base">
                   Fields marked with an asterisk are required.
                 </p>
                 <BookingForm
@@ -457,9 +476,9 @@ export default function TravelTemplate({
       </section>
 
       {/* CONTACT US — standalone section */}
-      <section id="contact" className="py-24 bg-white">
+      <section id="contact" className="py-12 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12 reveal">
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 reveal">
             <span className="text-accent-600 font-semibold text-sm uppercase tracking-wider">
               We&apos;d love to hear from you
             </span>
@@ -474,7 +493,7 @@ export default function TravelTemplate({
 
           <div className="grid lg:grid-cols-2 gap-8 reveal">
             {/* Contact info card */}
-            <div className="bg-gradient-to-br from-primary-700 to-primary-900 text-white rounded-[2.5rem] p-8 sm:p-10 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-primary-700 to-primary-900 text-white rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-10 relative overflow-hidden">
               <div
                 className="absolute inset-0 opacity-10 hero-pattern"
                 aria-hidden
@@ -565,11 +584,11 @@ export default function TravelTemplate({
             </div>
 
             {/* Inquiry form card */}
-            <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-xl p-8 sm:p-10">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-[2.5rem] shadow-xl p-5 sm:p-10">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                 Send us a message
               </h3>
-              <p className="text-gray-500 mb-8">
+              <p className="text-gray-500 mb-5 sm:mb-8 text-sm sm:text-base">
                 We typically reply within one business day.
               </p>
               <InquiryForm businessId={business.id} />
@@ -579,7 +598,7 @@ export default function TravelTemplate({
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
+      <footer className="bg-gray-900 text-white py-8 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-gray-500 text-sm">
             © {new Date().getFullYear()} {business.name}. All rights reserved.
