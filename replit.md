@@ -84,6 +84,15 @@ that runs in production.
 
 ## Recent work
 
+- Mobile-optimized owner dashboard: added `src/app/dashboard/MobileNav.tsx`
+  client component with a slide-out drawer, top app bar, and bottom tab bar
+  (Flutter/native-app feel). Desktop sidebar still rendered at `lg:` breakpoint.
+- Mobile-optimized admin dashboard: top bar now uses icon-only buttons on
+  small screens with safe-area insets.
+- PWA: added `src/app/dashboard/manifest.ts` (in addition to the existing
+  `[slug]` and `admin` manifests). Service worker (`public/sw.js`) bumped to
+  `v2` and now skips `/auth/*`, `/api/*`, `/_next/data/*`, RSC payloads, and
+  Next.js server actions to avoid breaking auth and mutations.
 - Migrated to Replit dev environment while preserving Vercel production.
 - Refactored Settings page to client forms with `useActionState`.
 - Added bookings CSV export (`/dashboard/bookings/export`).

@@ -1,8 +1,16 @@
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
+import type { Metadata } from 'next';
+import MobileNav from './MobileNav';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'mywebpages Dashboard',
+  manifest: '/dashboard/manifest.webmanifest',
+  appleWebApp: { capable: true, statusBarStyle: 'default', title: 'mywebpages' },
+};
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -36,10 +44,30 @@ export default async function DashboardLayout({ children }: { children: React.Re
     { name: 'Billing & Plans', href: '/dashboard/billing', icon: 'fa-credit-card' },
   ];
 
+  const bottomItems = [
+    { name: 'Home', href: '/dashboard', icon: 'fa-house' },
+    { name: 'Services', href: '/dashboard/services', icon: 'fa-list' },
+    { name: 'Bookings', href: '/dashboard/bookings', icon: 'fa-calendar-check' },
+    { name: 'Inquiries', href: '/dashboard/inquiries', icon: 'fa-envelope-open-text' },
+  ];
+
+  const businessForNav = business
+    ? { name: business.name as string, slug: business.slug as string }
+    : null;
+
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-100 flex flex-col fixed inset-y-0 shadow-sm z-30">
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile-only navigation: top app bar, drawer, bottom tabs */}
+      <MobileNav
+        menuItems={menuItems}
+        bottomItems={bottomItems}
+        displayName={displayName}
+        business={businessForNav}
+        isAdmin={isAdmin}
+      />
+
+      {/* Desktop sidebar (hidden on mobile) */}
+      <aside className="hidden lg:flex w-64 bg-white border-r border-gray-100 flex-col fixed inset-y-0 shadow-sm z-30">
         {/* Logo */}
         <div className="p-6 border-b border-gray-50">
           <Link href="/" className="flex items-center gap-2.5">
@@ -111,9 +139,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 min-h-screen">
-        {/* Top bar */}
-        <div className="bg-white border-b border-gray-100 px-10 py-4 flex items-center justify-between sticky top-0 z-20">
+      <main className="lg:ml-64 min-h-screen pt-[calc(env(safe-area-inset-top)+3.5rem)] pb-[calc(env(safe-area-inset-bottom)+5rem)] lg:pt-0 lg:pb-0">
+        {/* Desktop top bar (hidden on mobile) */}
+        <div className="hidden lg:flex bg-white border-b border-gray-100 px-10 py-4 items-center justify-between sticky top-0 z-20">
           <div className="text-sm text-gray-500">
             Welcome back, <span className="font-bold text-gray-800">{displayName}</span>
           </div>
@@ -124,7 +152,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         </div>
 
-        <div className="p-10">
+        <div className="px-4 py-5 sm:px-6 sm:py-6 lg:px-10 lg:py-10">
           {children}
         </div>
       </main>

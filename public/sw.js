@@ -1,4 +1,4 @@
-const CACHE = 'mywebpages-v1';
+const CACHE = 'mywebpages-v2';
 const OFFLINE_URLS = ['/'];
 
 self.addEventListener('install', (e) => {
@@ -16,17 +16,33 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  if (e.request.method !== 'GET') return;
-  if (!e.request.url.startsWith('http')) return;
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  if (!req.url.startsWith('http')) return;
+
+  const url = new URL(req.url);
+
+  // Never cache auth, API, server actions, Next.js internals or RSC payloads
+  if (
+    url.pathname.startsWith('/auth/') ||
+    url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith('/_next/data/') ||
+    url.searchParams.has('_rsc') ||
+    req.headers.get('next-action')
+  ) {
+    return;
+  }
+
+  // Network-first for navigations and HTML, cache static assets
   e.respondWith(
-    fetch(e.request)
+    fetch(req)
       .then((res) => {
-        if (res.ok) {
+        if (res.ok && (req.destination === 'image' || req.destination === 'style' || req.destination === 'script' || req.destination === 'font')) {
           const clone = res.clone();
-          caches.open(CACHE).then((c) => c.put(e.request, clone));
+          caches.open(CACHE).then((c) => c.put(req, clone));
         }
         return res;
       })
-      .catch(() => caches.match(e.request).then((r) => r || new Response('Offline', { status: 503 })))
+      .catch(() => caches.match(req).then((r) => r || caches.match('/') || new Response('Offline', { status: 503 })))
   );
 });
