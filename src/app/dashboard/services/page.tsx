@@ -15,10 +15,12 @@ export default async function ServicesManagement() {
 
   if (!business) return <p>Please create a business first.</p>;
 
+  const businessId = business.id;
+
   const { data: services } = await supabase
     .from('services')
     .select('*')
-    .eq('business_id', business.id);
+    .eq('business_id', businessId);
 
   async function addService(formData: FormData) {
     'use server';
@@ -28,7 +30,7 @@ export default async function ServicesManagement() {
     const description = formData.get('description') as string;
 
     await supabase.from('services').insert({
-      business_id: business.id,
+      business_id: businessId,
       name,
       price,
       description
