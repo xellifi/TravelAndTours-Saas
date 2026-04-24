@@ -217,7 +217,7 @@ export default function TravelTemplate({
                 <HeroSlideshow images={heroImages} fallback={heroImage} />
 
                 {/* Floating stat card — top right */}
-                <div className="absolute -top-6 -right-6 bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-3 max-w-[220px] float-anim">
+                <div className="absolute -top-6 -right-6 z-40 bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-3 max-w-[220px] float-anim">
                   <div className="w-12 h-12 rounded-xl bg-accent-100 text-accent-600 flex items-center justify-center text-xl flex-shrink-0">
                     <i className="fas fa-star" />
                   </div>
@@ -230,7 +230,7 @@ export default function TravelTemplate({
                 </div>
 
                 {/* Floating booking card — bottom left */}
-                <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-3 max-w-[260px]">
+                <div className="absolute -bottom-6 -left-6 z-40 bg-white rounded-2xl shadow-2xl p-4 flex items-center gap-3 max-w-[260px]">
                   <div className="w-12 h-12 rounded-xl bg-primary-100 text-primary-600 flex items-center justify-center text-xl flex-shrink-0">
                     <i className="fas fa-shield-alt" />
                   </div>
