@@ -19,32 +19,52 @@ export default function AddHeroImageForm({ remainingSlots }: Props) {
   );
   const formRef = useRef<HTMLFormElement>(null);
   const [fileError, setFileError] = useState<string | null>(null);
+  const [selectedCount, setSelectedCount] = useState(0);
 
   useEffect(() => {
     if (state?.success) {
       formRef.current?.reset();
       setFileError(null);
+      setSelectedCount(0);
     }
   }, [state]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) {
       setFileError(null);
+      setSelectedCount(0);
       return;
     }
-    if (!file.type.startsWith('image/')) {
-      setFileError('Please choose an image file (JPG, PNG, or WebP).');
+    if (files.length > remainingSlots) {
+      setFileError(
+        `You picked ${files.length} files but only ${remainingSlots} slot${
+          remainingSlots === 1 ? '' : 's'
+        } left.`,
+      );
       e.target.value = '';
+      setSelectedCount(0);
       return;
     }
-    if (file.size > MAX_UPLOAD_BYTES) {
-      const kb = Math.round(file.size / 1024);
-      setFileError(`That file is ${kb} KB. The limit is 100 KB.`);
-      e.target.value = '';
-      return;
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) {
+        setFileError(
+          `"${file.name}" is not an image. Use JPG, PNG, or WebP.`,
+        );
+        e.target.value = '';
+        setSelectedCount(0);
+        return;
+      }
+      if (file.size > MAX_UPLOAD_BYTES) {
+        const kb = Math.round(file.size / 1024);
+        setFileError(`"${file.name}" is ${kb} KB. The limit is 100 KB each.`);
+        e.target.value = '';
+        setSelectedCount(0);
+        return;
+      }
     }
     setFileError(null);
+    setSelectedCount(files.length);
   }
 
   if (remainingSlots <= 0) {
@@ -82,12 +102,13 @@ export default function AddHeroImageForm({ remainingSlots }: Props) {
 
       <div>
         <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
-          Image File
+          Image Files
         </label>
         <input
-          name="image_file"
+          name="image_files"
           type="file"
           accept="image/*"
+          multiple
           required
           onChange={handleFileChange}
           className="block w-full text-sm text-gray-600 file:mr-4 file:py-3 file:px-5 file:rounded-xl file:border-0 file:bg-primary-50 file:text-primary-700 file:font-semibold hover:file:bg-primary-100 cursor-pointer"
@@ -96,10 +117,20 @@ export default function AddHeroImageForm({ remainingSlots }: Props) {
           <p className="text-xs text-red-600 mt-2">{fileError}</p>
         ) : (
           <p className="text-xs text-gray-500 mt-2 leading-relaxed">
-            <strong>Max file size:</strong> 100&nbsp;KB. JPG, PNG, or WebP.
+            <strong>Max file size:</strong> 100&nbsp;KB each. JPG, PNG, or WebP.
             <br />
-            Tip: a wide landscape photo (e.g. 1200&nbsp;×&nbsp;900&nbsp;px)
-            looks best in the hero.
+            <strong>Recommended size:</strong> 1024&nbsp;×&nbsp;1024&nbsp;px (square).
+            <br />
+            You can pick several photos at once — hold <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>{' '}
+            while clicking files.
+            {selectedCount > 0 && (
+              <>
+                <br />
+                <span className="text-primary-700 font-bold">
+                  {selectedCount} file{selectedCount === 1 ? '' : 's'} ready to upload.
+                </span>
+              </>
+            )}
           </p>
         )}
       </div>
@@ -108,7 +139,7 @@ export default function AddHeroImageForm({ remainingSlots }: Props) {
         pendingText="Uploading…"
         className="w-full btn-primary py-4 rounded-xl text-white font-bold"
       >
-        Upload Image
+        {selectedCount > 1 ? `Upload ${selectedCount} Images` : 'Upload Image'}
       </SubmitButton>
     </form>
   );

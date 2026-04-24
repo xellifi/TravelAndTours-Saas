@@ -64,53 +64,95 @@ export async function addHeroImageAction(
     };
   }
 
-  const file = formData.get('image_file');
-  if (!(file instanceof File) || file.size === 0) {
-    return { success: false, message: 'Please choose an image to upload.' };
+  const rawFiles = formData.getAll('image_files');
+  const files = rawFiles.filter(
+    (f): f is File => f instanceof File && f.size > 0,
+  );
+
+  if (files.length === 0) {
+    return { success: false, message: 'Please choose at least one image.' };
   }
-  if (!file.type.startsWith('image/')) {
-    return { success: false, message: 'Please upload an image file.' };
-  }
-  if (file.size > MAX_UPLOAD_BYTES) {
-    const kb = Math.round(file.size / 1024);
+
+  const remainingSlots = MAX_HERO_IMAGES - existing.length;
+  if (files.length > remainingSlots) {
     return {
       success: false,
-      message: `That image is ${kb} KB. The limit is 100 KB.`,
+      message: `You can add ${remainingSlots} more image${
+        remainingSlots === 1 ? '' : 's'
+      }, but you picked ${files.length}.`,
     };
   }
 
-  const ext = extensionFromMime(file.type);
-  const path = `hero/${business.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
-
-  const { error: uploadError } = await supabase.storage
-    .from(STORAGE_BUCKET)
-    .upload(path, file, {
-      contentType: file.type,
-      upsert: false,
-    });
-
-  if (uploadError) {
-    return { success: false, message: `Upload failed: ${uploadError.message}` };
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) {
+      return {
+        success: false,
+        message: `"${file.name}" is not an image. Use JPG, PNG, or WebP.`,
+      };
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      const kb = Math.round(file.size / 1024);
+      return {
+        success: false,
+        message: `"${file.name}" is ${kb} KB. The limit is 100 KB each.`,
+      };
+    }
   }
 
-  const { data: publicUrlData } = supabase.storage
-    .from(STORAGE_BUCKET)
-    .getPublicUrl(path);
-  const publicUrl = publicUrlData.publicUrl;
+  const uploadedUrls: string[] = [];
+  for (const file of files) {
+    const ext = extensionFromMime(file.type);
+    const path = `hero/${business.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
 
-  const next = [...existing, publicUrl];
+    const { error: uploadError } = await supabase.storage
+      .from(STORAGE_BUCKET)
+      .upload(path, file, {
+        contentType: file.type,
+        upsert: false,
+      });
+
+    if (uploadError) {
+      // Roll back any files we already uploaded in this batch.
+      for (const url of uploadedUrls) {
+        const p = pathFromPublicUrl(url);
+        if (p) await supabase.storage.from(STORAGE_BUCKET).remove([p]);
+      }
+      return {
+        success: false,
+        message: `Upload failed for "${file.name}": ${uploadError.message}`,
+      };
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(path);
+    uploadedUrls.push(publicUrlData.publicUrl);
+  }
+
+  const next = [...existing, ...uploadedUrls];
   const { error: updateError } = await supabase
     .from('businesses')
     .update({ hero_images: next })
     .eq('id', business.id);
 
   if (updateError) {
+    // Roll back uploads if the DB update failed so we don't leave orphans.
+    for (const url of uploadedUrls) {
+      const p = pathFromPublicUrl(url);
+      if (p) await supabase.storage.from(STORAGE_BUCKET).remove([p]);
+    }
     return { success: false, message: updateError.message };
   }
 
   revalidatePath('/dashboard/hero-images');
   if (business.slug) revalidatePath(`/${business.slug}`);
-  return { success: true, message: 'Image added.' };
+  return {
+    success: true,
+    message:
+      uploadedUrls.length === 1
+        ? 'Image added.'
+        : `${uploadedUrls.length} images added.`,
+  };
 }
 
 export async function deleteHeroImageAction(formData: FormData): Promise<void> {
