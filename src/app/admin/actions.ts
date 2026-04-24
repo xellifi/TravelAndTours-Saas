@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/admin';
 import { revalidatePath } from 'next/cache';
 
 export type CloneBusinessState = {
@@ -58,14 +59,14 @@ async function assertAdmin() {
  * performed (so we still leave the cloned business with a working image link).
  */
 async function copyStorageFile(
-  supabase: Awaited<ReturnType<typeof createClient>>,
+  admin: ReturnType<typeof createAdminClient>,
   originalUrl: string,
   newPath: string,
 ): Promise<string> {
   const oldPath = pathFromPublicUrl(originalUrl);
   if (!oldPath) return originalUrl;
 
-  const { error } = await supabase.storage
+  const { error } = await admin.storage
     .from(STORAGE_BUCKET)
     .copy(oldPath, newPath);
 
@@ -82,10 +83,15 @@ export async function cloneBusinessAction(
   _prev: CloneBusinessState,
   formData: FormData,
 ): Promise<CloneBusinessState> {
-  const { supabase, user, isAdmin } = await assertAdmin();
+  const { user, isAdmin } = await assertAdmin();
   if (!user || !isAdmin) {
     return { success: false, message: 'Admin access required.' };
   }
+
+  // Use the service-role client for the actual clone work so RLS doesn't
+  // block inserts/updates that target rows the admin does not own
+  // (e.g. services on the new business). The admin check above gates this.
+  const admin = createAdminClient();
 
   const sourceId = (formData.get('source_id') as string)?.trim() || '';
   const targetUserId = (formData.get('target_user_id') as string)?.trim() || '';
@@ -112,7 +118,7 @@ export async function cloneBusinessAction(
   }
 
   // Make sure the target user exists.
-  const { data: targetUser } = await supabase
+  const { data: targetUser } = await admin
     .from('users')
     .select('id, email')
     .eq('id', targetUserId)
@@ -122,7 +128,7 @@ export async function cloneBusinessAction(
   }
 
   // Each owner can only have one business in this app.
-  const { data: alreadyOwns } = await supabase
+  const { data: alreadyOwns } = await admin
     .from('businesses')
     .select('id')
     .eq('owner_id', targetUserId)
@@ -135,7 +141,7 @@ export async function cloneBusinessAction(
   }
 
   // Slug must be unique platform-wide.
-  const { data: slugTaken } = await supabase
+  const { data: slugTaken } = await admin
     .from('businesses')
     .select('id')
     .eq('slug', newSlug)
@@ -148,7 +154,7 @@ export async function cloneBusinessAction(
   }
 
   // Pull the full source business.
-  const { data: source } = await supabase
+  const { data: source } = await admin
     .from('businesses')
     .select('*')
     .eq('id', sourceId)
@@ -177,7 +183,7 @@ export async function cloneBusinessAction(
   newBusiness.slug = newSlug;
   newBusiness.hero_images = [];
 
-  const { data: inserted, error: insertError } = await supabase
+  const { data: inserted, error: insertError } = await admin
     .from('businesses')
     .insert(newBusiness)
     .select('id, slug')
@@ -201,7 +207,7 @@ export async function cloneBusinessAction(
     if (oldPath) {
       const ext = oldPath.split('.').pop() || 'jpg';
       const newPath = `hero/${newBusinessId}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
-      const newUrl = await copyStorageFile(supabase, url, newPath);
+      const newUrl = await copyStorageFile(admin, url, newPath);
       clonedHeroes.push(newUrl);
     } else {
       clonedHeroes.push(url);
@@ -209,14 +215,14 @@ export async function cloneBusinessAction(
   }
 
   if (clonedHeroes.length > 0) {
-    await supabase
+    await admin
       .from('businesses')
       .update({ hero_images: clonedHeroes })
       .eq('id', newBusinessId);
   }
 
   // ---- Clone services ----
-  const { data: sourceServices } = await supabase
+  const { data: sourceServices } = await admin
     .from('services')
     .select('*')
     .eq('business_id', sourceId);
@@ -239,7 +245,7 @@ export async function cloneBusinessAction(
         if (oldPath) {
           const ext = oldPath.split('.').pop() || 'jpg';
           const newPath = `services/${newBusinessId}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
-          next.image_url = await copyStorageFile(supabase, oldImg, newPath);
+          next.image_url = await copyStorageFile(admin, oldImg, newPath);
         }
       }
 
@@ -247,7 +253,7 @@ export async function cloneBusinessAction(
     }
 
     if (serviceRows.length > 0) {
-      const { error: svcError } = await supabase.from('services').insert(serviceRows);
+      const { error: svcError } = await admin.from('services').insert(serviceRows);
       if (svcError) {
         // Don't bail — the business itself is already created. Surface a warning.
         revalidatePath('/admin');
@@ -261,7 +267,7 @@ export async function cloneBusinessAction(
   }
 
   // ---- Clone payment settings ----
-  const { data: sourcePayment } = await supabase
+  const { data: sourcePayment } = await admin
     .from('payment_settings')
     .select('*')
     .eq('business_id', sourceId)
@@ -276,7 +282,7 @@ export async function cloneBusinessAction(
     }
     next.business_id = newBusinessId;
 
-    await supabase
+    await admin
       .from('payment_settings')
       .upsert(next, { onConflict: 'business_id' });
   }
