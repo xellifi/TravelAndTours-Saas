@@ -31,7 +31,7 @@ export default function ServiceCard({ service }: Props) {
 
   if (isEditing) {
     return (
-      <div className="bg-white p-6 rounded-2xl shadow-sm border-2 border-primary-200">
+      <div className="bg-white p-6 rounded-2xl border border-primary-500">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold text-gray-900 text-base">
             Editing &ldquo;{service.name}&rdquo;
@@ -46,7 +46,7 @@ export default function ServiceCard({ service }: Props) {
   }
 
   return (
-    <div className="bg-white p-3 sm:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 sm:gap-5">
+    <div className="bg-white p-3 sm:p-5 rounded-2xl border border-gray-300 flex items-center gap-3 sm:gap-5">
       <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
         {service.image_url ? (
           <Image

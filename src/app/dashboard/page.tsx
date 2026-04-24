@@ -99,7 +99,7 @@ export default async function DashboardOverview() {
         />
       </div>
 
-      <div className="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100">
+      <div className="bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl border border-gray-300">
         <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Recent Activity</h3>
         <div className="flex items-center justify-center h-32 sm:h-40 text-gray-400 text-sm border-2 border-dashed border-gray-100 rounded-2xl px-4 text-center">
           No recent activity to show yet.
@@ -122,7 +122,7 @@ const StatCard = ({
   color: string;
   bgColor: string;
 }) => (
-  <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-50 flex items-center gap-4 sm:gap-5">
+  <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-300 flex items-center gap-4 sm:gap-5">
     <div
       className={`w-12 h-12 sm:w-14 sm:h-14 ${bgColor} ${color} rounded-2xl flex items-center justify-center text-lg sm:text-xl flex-shrink-0`}
     >

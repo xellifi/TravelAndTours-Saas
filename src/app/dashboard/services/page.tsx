@@ -10,7 +10,7 @@ export default async function ServicesManagement() {
   const ctx = await requireActiveBusiness();
   if (!ctx) {
     return (
-      <div className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 text-center">
+      <div className="bg-white p-12 rounded-3xl border border-gray-300 text-center">
         <p className="text-gray-500 mb-4">
           You don&apos;t have a business yet.
         </p>

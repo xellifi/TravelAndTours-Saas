@@ -28,7 +28,7 @@ export default function PaymentSettingsForm({ paymentSettings }: Props) {
   return (
     <form
       action={action}
-      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 space-y-5 sm:space-y-6"
+      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-300 space-y-5 sm:space-y-6"
     >
       <div>
         <h2 className="text-base sm:text-xl font-bold text-gray-900">Payment Settings</h2>
@@ -55,7 +55,7 @@ export default function PaymentSettingsForm({ paymentSettings }: Props) {
             <input
               name="gcash_name"
               defaultValue={paymentSettings?.gcash_name || ''}
-              className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm"
               placeholder="Juan Dela Cruz"
             />
           </div>
@@ -66,7 +66,7 @@ export default function PaymentSettingsForm({ paymentSettings }: Props) {
             <input
               name="gcash_number"
               defaultValue={paymentSettings?.gcash_number || ''}
-              className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm"
               placeholder="09XX XXX XXXX"
             />
           </div>
@@ -89,7 +89,7 @@ export default function PaymentSettingsForm({ paymentSettings }: Props) {
             <input
               name="paymaya_name"
               defaultValue={paymentSettings?.paymaya_name || ''}
-              className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm"
               placeholder="Juan Dela Cruz"
             />
           </div>
@@ -100,7 +100,7 @@ export default function PaymentSettingsForm({ paymentSettings }: Props) {
             <input
               name="paymaya_number"
               defaultValue={paymentSettings?.paymaya_number || ''}
-              className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm"
               placeholder="09XX XXX XXXX"
             />
           </div>
@@ -123,7 +123,7 @@ export default function PaymentSettingsForm({ paymentSettings }: Props) {
             <input
               name="bank_name"
               defaultValue={paymentSettings?.bank_name || ''}
-              className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm"
               placeholder="BDO / BPI / Metrobank"
             />
           </div>
@@ -134,7 +134,7 @@ export default function PaymentSettingsForm({ paymentSettings }: Props) {
             <input
               name="bank_account_name"
               defaultValue={paymentSettings?.bank_account_name || ''}
-              className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm"
               placeholder="Juan Dela Cruz"
             />
           </div>
@@ -145,7 +145,7 @@ export default function PaymentSettingsForm({ paymentSettings }: Props) {
             <input
               name="bank_account_number"
               defaultValue={paymentSettings?.bank_account_number || ''}
-              className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm"
               placeholder="0000 0000 0000"
             />
           </div>

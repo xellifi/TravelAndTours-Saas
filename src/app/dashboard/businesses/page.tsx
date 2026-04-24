@@ -137,7 +137,7 @@ export default async function MyBusinessesPage() {
           </div>
 
           {/* Desktop: table */}
-          <div className="hidden sm:block bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="hidden sm:block bg-white rounded-3xl border border-gray-300 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[680px]">
                 <thead className="bg-gray-50">

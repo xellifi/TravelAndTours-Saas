@@ -81,7 +81,7 @@ export default function AddHeroImageForm({ remainingSlots }: Props) {
     <form
       ref={formRef}
       action={formAction}
-      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 space-y-4 sm:space-y-5"
+      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-300 space-y-4 sm:space-y-5"
     >
       <div>
         <h2 className="text-base sm:text-xl font-bold text-gray-900">Add a Photo</h2>

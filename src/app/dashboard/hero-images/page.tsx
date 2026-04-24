@@ -11,7 +11,7 @@ export default async function HeroImagesPage() {
   const ctx = await requireActiveBusiness();
   if (!ctx) {
     return (
-      <div className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 text-center">
+      <div className="bg-white p-12 rounded-3xl border border-gray-300 text-center">
         <p className="text-gray-500 mb-4">
           You don&apos;t have a business yet.
         </p>
@@ -58,7 +58,7 @@ export default async function HeroImagesPage() {
               {heroImages.map((url, i) => (
                 <div
                   key={url}
-                  className="relative group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+                  className="relative group bg-white rounded-2xl border border-gray-300 overflow-hidden"
                 >
                   <div className="relative aspect-[4/3] bg-gray-100">
                     <Image

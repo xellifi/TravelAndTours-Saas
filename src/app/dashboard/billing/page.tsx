@@ -64,7 +64,7 @@ export default async function BillingPage() {
       <p className="text-gray-500 text-sm sm:text-base mb-5 sm:mb-8">Manage your plan. Upgrade by sending manual payment via GCash, PayMaya, or bank transfer.</p>
 
       {/* Current Plan Banner */}
-      <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 mb-5 sm:mb-8 flex items-center justify-between gap-3">
+      <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-300 mb-5 sm:mb-8 flex items-center justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">Current Plan</p>
           <h2 className="text-2xl sm:text-3xl font-black text-primary-600 uppercase">{currentPlan}</h2>
@@ -86,8 +86,8 @@ export default async function BillingPage() {
           return (
             <div key={plan.id} className={`p-5 sm:p-6 rounded-2xl sm:rounded-3xl border-2 flex flex-col transition-all ${
               isActive
-                ? 'border-primary-500 bg-primary-50/30 shadow-lg shadow-primary-50'
-                : 'border-gray-100 bg-white hover:border-gray-200 shadow-sm hover:shadow-md'
+                ? 'border-primary-500 bg-primary-50/30'
+                : 'border-gray-300 bg-white hover:border-gray-400'
             }`}>
               {isActive && (
                 <div className="text-[10px] sm:text-xs font-black text-primary-700 uppercase tracking-widest bg-primary-100 px-2.5 py-1 rounded-full self-start mb-3">
@@ -117,7 +117,7 @@ export default async function BillingPage() {
       </div>
 
       {/* How to Upgrade */}
-      <div id="how-to-upgrade" className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+      <div id="how-to-upgrade" className="bg-white rounded-2xl sm:rounded-3xl border border-gray-300 overflow-hidden">
         <div className="p-4 sm:p-6 border-b border-gray-100">
           <h2 className="text-lg sm:text-2xl font-bold text-gray-900">How to Upgrade</h2>
           <p className="text-gray-500 text-xs sm:text-sm mt-1">Send payment via any of the methods below, then email us with your payment screenshot and the plan you want.</p>

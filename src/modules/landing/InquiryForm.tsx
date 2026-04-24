@@ -48,21 +48,21 @@ export default function InquiryForm({ businessId }: { businessId: string }) {
       <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2 uppercase">Full Name</label>
-           <input name="name" required className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-gray-300 focus:border-primary-500 outline-none transition-all text-sm sm:text-base" />
+           <input name="name" required className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm sm:text-base" />
         </div>
         <div>
            <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2 uppercase">Email Address</label>
-           <input name="email" type="email" required className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-gray-300 focus:border-primary-500 outline-none transition-all text-sm sm:text-base" />
+           <input name="email" type="email" required className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm sm:text-base" />
         </div>
       </div>
       <div>
          <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2 uppercase">Message</label>
-         <textarea name="message" required rows={4} className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-gray-300 focus:border-primary-500 outline-none transition-all resize-none text-sm sm:text-base"></textarea>
+         <textarea name="message" required rows={4} className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all resize-none text-sm sm:text-base"></textarea>
       </div>
       <button 
         type="submit" 
         disabled={loading}
-        className="w-full btn-primary py-3.5 sm:py-5 rounded-2xl text-white font-bold text-base sm:text-lg shadow-xl hover:shadow-primary-200 transition-all disabled:opacity-50"
+        className="w-full btn-primary py-3.5 sm:py-5 rounded-2xl text-white font-bold text-base sm:text-lg transition-all disabled:opacity-50"
       >
         {loading ? 'Sending...' : 'Send Inquiry'} <i className="fas fa-paper-plane ml-2"></i>
       </button>

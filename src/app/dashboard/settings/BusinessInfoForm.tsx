@@ -34,12 +34,12 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
   const isExisting = Boolean(business);
 
   const slugInputClass =
-    'w-full min-w-0 px-3 py-3 sm:px-4 sm:py-3.5 text-sm sm:text-base rounded-r-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all';
+    'w-full min-w-0 px-3 py-3 sm:px-4 sm:py-3.5 text-sm sm:text-base rounded-r-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all';
 
   return (
     <form
       action={action}
-      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 space-y-5 sm:space-y-6"
+      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-300 space-y-5 sm:space-y-6"
     >
       <h2 className="text-base sm:text-xl font-bold text-gray-900">Business Information</h2>
 
@@ -53,7 +53,7 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
           name="name"
           defaultValue={business?.name || ''}
           required
-          className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+          className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all"
           placeholder="My Travel Agency"
         />
       </div>
@@ -63,7 +63,7 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
           Landing Page URL
         </label>
         <div className="flex items-stretch">
-          <span className="px-2.5 py-3 sm:px-3 sm:py-3.5 bg-gray-100 rounded-l-xl text-gray-500 font-medium text-xs sm:text-sm border-2 border-r-0 border-transparent whitespace-nowrap flex items-center max-w-[45%] truncate">
+          <span className="px-2.5 py-3 sm:px-3 sm:py-3.5 bg-gray-100 rounded-l-xl text-gray-500 font-medium text-xs sm:text-sm border border-r-0 border-gray-300 whitespace-nowrap flex items-center max-w-[45%] truncate">
             {baseUrl}/
           </span>
           <input
@@ -101,7 +101,7 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
         <select
           name="template_id"
           defaultValue={business?.template_id || 'travel'}
-          className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+          className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all"
         >
           {templates.map((t) => (
             <option key={t.id} value={t.id}>
@@ -127,7 +127,7 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
             <input
               name="operating_hours"
               defaultValue={business?.operating_hours || ''}
-              className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+              className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all"
               placeholder="Mon – Sat · 9:00 AM – 7:00 PM"
             />
           </div>
@@ -139,7 +139,7 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
             <input
               name="operating_hours_note"
               defaultValue={business?.operating_hours_note || ''}
-              className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+              className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all"
               placeholder="Sundays by appointment"
             />
           </div>

@@ -31,7 +31,7 @@ export default function AddSocialLinkForm() {
     <form
       ref={formRef}
       action={formAction}
-      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 space-y-4"
+      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-300 space-y-4"
     >
       <div>
         <h2 className="text-base sm:text-lg font-bold text-gray-900">
@@ -52,7 +52,7 @@ export default function AddSocialLinkForm() {
           name="platform"
           value={platform}
           onChange={(e) => setPlatform(e.target.value)}
-          className="w-full p-3.5 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none text-sm sm:text-base"
+          className="w-full p-3.5 bg-gray-50 rounded-xl border border-gray-300 focus:border-primary-500 outline-none text-sm sm:text-base"
         >
           {SOCIAL_PLATFORMS.map((p) => (
             <option key={p.id} value={p.id}>
@@ -72,7 +72,7 @@ export default function AddSocialLinkForm() {
           type="url"
           inputMode="url"
           placeholder={placeholder}
-          className="w-full p-3.5 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none text-sm sm:text-base"
+          className="w-full p-3.5 bg-gray-50 rounded-xl border border-gray-300 focus:border-primary-500 outline-none text-sm sm:text-base"
         />
         <p className="text-[11px] sm:text-xs text-gray-400 mt-1.5">
           Tip: copy the address bar URL from the page you want to link to.

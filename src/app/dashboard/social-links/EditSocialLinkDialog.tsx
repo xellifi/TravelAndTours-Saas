@@ -82,7 +82,7 @@ export default function EditSocialLinkDialog({ link }: Props) {
                   name="platform"
                   value={platform}
                   onChange={(e) => setPlatform(e.target.value)}
-                  className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+                  className="w-full p-4 bg-gray-50 rounded-xl border border-gray-300 focus:border-primary-500 outline-none"
                 >
                   {SOCIAL_PLATFORMS.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -103,7 +103,7 @@ export default function EditSocialLinkDialog({ link }: Props) {
                   inputMode="url"
                   defaultValue={link.url}
                   placeholder={placeholder}
-                  className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+                  className="w-full p-4 bg-gray-50 rounded-xl border border-gray-300 focus:border-primary-500 outline-none"
                 />
               </div>
 

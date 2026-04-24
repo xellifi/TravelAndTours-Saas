@@ -8,7 +8,7 @@ export default async function InquiriesView() {
   const ctx = await requireActiveBusiness();
   if (!ctx) {
     return (
-      <div className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 text-center">
+      <div className="bg-white p-12 rounded-3xl border border-gray-300 text-center">
         <p className="text-gray-500 mb-4">
           You don&apos;t have a business yet.
         </p>
@@ -43,7 +43,7 @@ export default async function InquiriesView() {
 
       <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
         {inquiries?.map((inquiry) => (
-          <div key={inquiry.id} className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 flex flex-col">
+          <div key={inquiry.id} className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-300 flex flex-col">
             <div className="flex justify-between items-start gap-3 mb-4">
               <div className="min-w-0 flex-1">
                 <h3 className="font-bold text-base sm:text-lg text-gray-900 truncate">{inquiry.name}</h3>

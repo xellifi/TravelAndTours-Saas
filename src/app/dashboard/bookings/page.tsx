@@ -9,7 +9,7 @@ export default async function BookingsView() {
   const ctx = await requireActiveBusiness();
   if (!ctx) {
     return (
-      <div className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 text-center">
+      <div className="bg-white p-12 rounded-3xl border border-gray-300 text-center">
         <p className="text-gray-500 mb-4">
           You don&apos;t have a business yet.
         </p>
@@ -89,7 +89,7 @@ export default async function BookingsView() {
       {/* Mobile: card list */}
       <div className="sm:hidden space-y-3">
         {bookings?.map((booking) => (
-          <div key={booking.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+          <div key={booking.id} className="bg-white rounded-2xl border border-gray-300 p-4">
             <div className="flex items-start justify-between gap-3 mb-3">
               <div className="min-w-0 flex-1">
                 <p className="font-bold text-gray-900 text-[15px] truncate">{booking.client_name}</p>
@@ -119,12 +119,12 @@ export default async function BookingsView() {
           </div>
         ))}
         {bookings?.length === 0 && (
-          <div className="p-8 text-center text-gray-400 text-sm bg-white rounded-2xl border border-gray-100">No bookings yet.</div>
+          <div className="p-8 text-center text-gray-400 text-sm bg-white rounded-2xl border border-gray-300">No bookings yet.</div>
         )}
       </div>
 
       {/* Desktop: table */}
-      <div className="hidden sm:block bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="hidden sm:block bg-white rounded-3xl border border-gray-300 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left min-w-[640px]">
             <thead className="bg-gray-50 border-b border-gray-100">

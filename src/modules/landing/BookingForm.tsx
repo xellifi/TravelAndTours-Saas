@@ -81,7 +81,7 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
         </div>
 
         {hasPayment && (
-          <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-sm">
+          <div className="bg-white border border-gray-300 rounded-3xl overflow-hidden">
             <div className="bg-gradient-to-r from-primary-600 to-primary-800 px-8 py-5">
               <h4 className="text-white font-bold text-lg">How to Pay</h4>
               <p className="text-primary-100 text-sm mt-0.5">Send your down payment or full payment via any of the methods below, then reply to our email with your payment screenshot.</p>
@@ -156,7 +156,7 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
           <input
             name="name"
             required
-            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm sm:text-base"
+            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm sm:text-base"
             placeholder="Juan Dela Cruz"
           />
         </div>
@@ -166,7 +166,7 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
             name="email"
             type="email"
             required
-            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm sm:text-base"
+            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm sm:text-base"
             placeholder="juan@example.com"
           />
         </div>
@@ -178,7 +178,7 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
           <select
             name="service_id"
             required
-            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all appearance-none text-sm sm:text-base"
+            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all appearance-none text-sm sm:text-base"
           >
             <option value="">Choose a service...</option>
             {services.map((s) => {
@@ -198,7 +198,7 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
             name="date"
             type="datetime-local"
             required
-            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all text-sm sm:text-base"
+            className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-2xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all text-sm sm:text-base"
           />
         </div>
       </div>
@@ -206,7 +206,7 @@ export default function BookingForm({ businessId, services, isLimitReached, paym
       <button
         type="submit"
         disabled={loading}
-        className="w-full btn-primary py-3.5 sm:py-5 rounded-2xl text-white font-bold text-base sm:text-lg shadow-xl disabled:opacity-50"
+        className="w-full btn-primary py-3.5 sm:py-5 rounded-2xl text-white font-bold text-base sm:text-lg disabled:opacity-50"
       >
         {loading ? 'Submitting...' : 'Request Booking'}{' '}
         <i className="fas fa-chevron-right ml-2 text-sm"></i>

@@ -104,7 +104,7 @@ export default function DeleteBusinessButton({
                 <input
                   value={confirmText}
                   onChange={(e) => setConfirmText(e.target.value)}
-                  className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-red-500 outline-none font-mono text-sm"
+                  className="w-full p-4 bg-gray-50 rounded-xl border border-gray-300 focus:border-red-500 outline-none font-mono text-sm"
                   autoFocus
                 />
               </div>

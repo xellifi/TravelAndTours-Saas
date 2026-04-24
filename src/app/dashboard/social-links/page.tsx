@@ -16,7 +16,7 @@ export default async function SocialLinksPage() {
 
   if (!ctx) {
     return (
-      <div className="bg-white p-12 rounded-3xl shadow-sm border border-gray-100 text-center">
+      <div className="bg-white p-12 rounded-3xl border border-gray-300 text-center">
         <p className="text-gray-500 mb-4">
           You don&apos;t have a business yet.
         </p>
@@ -77,7 +77,7 @@ export default async function SocialLinksPage() {
                 return (
                   <div
                     key={link.id}
-                    className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 sm:gap-4"
+                    className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-300 flex items-center gap-3 sm:gap-4"
                   >
                     <div
                       className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg flex-shrink-0 ${brand}`}
@@ -111,7 +111,7 @@ export default async function SocialLinksPage() {
           )}
 
           {/* Supported platforms hint */}
-          <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 sm:p-5">
+          <div className="bg-gray-50 border border-gray-300 rounded-2xl p-4 sm:p-5">
             <p className="text-[11px] sm:text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
               Supported platforms
             </p>

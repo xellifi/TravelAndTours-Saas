@@ -47,7 +47,7 @@ export default async function ProfilePage() {
       <p className="text-gray-500 text-sm sm:text-base mb-5 sm:mb-8">Manage your account information and password.</p>
 
       {/* Avatar + info */}
-      <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-gray-100 mb-4 sm:mb-6 flex items-center gap-4 sm:gap-5">
+      <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-gray-300 mb-4 sm:mb-6 flex items-center gap-4 sm:gap-5">
         <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-primary-400 to-primary-700 rounded-full flex items-center justify-center text-white font-black text-2xl sm:text-3xl shadow-lg shadow-primary-100 flex-shrink-0 uppercase">
           {displayName[0]}
         </div>
@@ -62,7 +62,7 @@ export default async function ProfilePage() {
       </div>
 
       {/* Update name */}
-      <form action={updateProfile} className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 mb-4 sm:mb-6 space-y-4 sm:space-y-5">
+      <form action={updateProfile} className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-300 mb-4 sm:mb-6 space-y-4 sm:space-y-5">
         <h2 className="text-base sm:text-lg font-bold text-gray-900">Personal Information</h2>
         <div>
           <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Full Name</label>
@@ -70,7 +70,7 @@ export default async function ProfilePage() {
             name="full_name"
             defaultValue={profile?.full_name || ''}
             required
-            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all"
             placeholder="Your full name"
           />
         </div>
@@ -79,7 +79,7 @@ export default async function ProfilePage() {
           <input
             value={user.email || ''}
             disabled
-            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-100 border-2 border-transparent outline-none text-gray-400 cursor-not-allowed"
+            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-100 border border-gray-300 outline-none text-gray-400 cursor-not-allowed"
           />
           <p className="mt-1.5 text-[11px] sm:text-xs text-gray-400">Email cannot be changed here. Contact support if needed.</p>
         </div>
@@ -89,7 +89,7 @@ export default async function ProfilePage() {
       </form>
 
       {/* Change password */}
-      <form action={updatePassword} className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 space-y-4 sm:space-y-5">
+      <form action={updatePassword} className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-300 space-y-4 sm:space-y-5">
         <h2 className="text-base sm:text-lg font-bold text-gray-900">Change Password</h2>
         <div>
           <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">New Password</label>
@@ -98,7 +98,7 @@ export default async function ProfilePage() {
             type="password"
             required
             minLength={6}
-            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border border-gray-300 focus:border-primary-500 outline-none transition-all"
             placeholder="Min. 6 characters"
           />
         </div>

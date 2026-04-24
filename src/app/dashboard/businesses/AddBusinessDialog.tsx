@@ -84,7 +84,7 @@ export default function AddBusinessDialog({
                 <input
                   name="name"
                   required
-                  className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+                  className="w-full p-4 bg-gray-50 rounded-xl border border-gray-300 focus:border-primary-500 outline-none"
                   placeholder="e.g. Sunshine Travel"
                 />
               </div>
@@ -93,7 +93,7 @@ export default function AddBusinessDialog({
                 <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
                   Landing Page URL <span className="text-red-500">*</span>
                 </label>
-                <div className="flex items-center bg-gray-50 rounded-xl border border-transparent focus-within:border-primary-500 overflow-hidden">
+                <div className="flex items-center bg-gray-50 rounded-xl border border-gray-300 focus-within:border-primary-500 overflow-hidden">
                   <span className="pl-4 pr-2 text-gray-400 text-sm">/</span>
                   <input
                     name="slug"
@@ -114,7 +114,7 @@ export default function AddBusinessDialog({
                 <select
                   name="template_id"
                   defaultValue="travel"
-                  className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+                  className="w-full p-4 bg-gray-50 rounded-xl border border-gray-300 focus:border-primary-500 outline-none"
                 >
                   {templates.map((t) => (
                     <option key={t.id} value={t.id}>
