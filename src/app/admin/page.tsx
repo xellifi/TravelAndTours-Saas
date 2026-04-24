@@ -1,5 +1,6 @@
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
+import CloneBusinessDialog from './CloneBusinessDialog';
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -10,12 +11,24 @@ export default async function AdminDashboard() {
     { count: usersCount },
     { count: bookingsCount },
     { count: inquiriesCount },
+    { data: allUsers },
   ] = await Promise.all([
-    supabase.from('businesses').select('id, name, slug, owner_id, template_id, created_at, users(email)'),
+    supabase
+      .from('businesses')
+      .select(
+        'id, name, slug, owner_id, template_id, created_at, users(email)',
+      ),
     supabase.from('users').select('id', { count: 'exact', head: true }),
     supabase.from('bookings').select('id', { count: 'exact', head: true }),
     supabase.from('inquiries').select('id', { count: 'exact', head: true }),
+    supabase.from('users').select('id, email, full_name'),
   ]);
+
+  // Eligible users for cloning = anyone who doesn't already own a business.
+  const ownerIds = new Set(
+    (businesses || []).map((b: { owner_id: string | null }) => b.owner_id),
+  );
+  const eligibleUsers = (allUsers || []).filter((u) => !ownerIds.has(u.id));
 
   return (
     <div>
@@ -70,14 +83,22 @@ export default async function AdminDashboard() {
                 <td className="px-8 py-5 text-sm text-gray-500">
                   {biz.created_at ? new Date(biz.created_at).toLocaleDateString('en-PH') : '—'}
                 </td>
-                <td className="px-8 py-5 text-right">
-                  <Link
-                    href={`/${biz.slug}`}
-                    target="_blank"
-                    className="inline-flex items-center gap-1.5 text-primary-600 font-bold text-sm hover:underline"
-                  >
-                    View Page <i className="fas fa-external-link-alt text-xs"></i>
-                  </Link>
+                <td className="px-8 py-5">
+                  <div className="flex items-center justify-end gap-5">
+                    <CloneBusinessDialog
+                      sourceId={biz.id}
+                      sourceName={biz.name}
+                      sourceSlug={biz.slug}
+                      eligibleUsers={eligibleUsers}
+                    />
+                    <Link
+                      href={`/${biz.slug}`}
+                      target="_blank"
+                      className="inline-flex items-center gap-1.5 text-primary-600 font-bold text-sm hover:underline"
+                    >
+                      View Page <i className="fas fa-external-link-alt text-xs"></i>
+                    </Link>
+                  </div>
                 </td>
               </tr>
             ))}
