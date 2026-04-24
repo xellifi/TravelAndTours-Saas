@@ -69,13 +69,13 @@ export default async function MarketingPage() {
     <div className="min-h-screen bg-white font-sans antialiased">
       {/* ── Navbar ── */}
       <header className="fixed inset-x-0 top-0 z-50 glass-nav">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 h-14 sm:h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center text-white font-black text-sm shadow-md shadow-primary-200">
+          <Link href="/" className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center text-white font-black text-xs sm:text-sm shadow-md shadow-primary-200 flex-shrink-0">
               M
             </div>
-            <span className="font-black text-xl text-gray-900 tracking-tight">mywebpages</span>
+            <span className="font-black text-base sm:text-xl text-gray-900 tracking-tight truncate">mywebpages</span>
           </Link>
 
           {/* Nav Links */}
@@ -92,18 +92,19 @@ export default async function MarketingPage() {
           </nav>
 
           {/* CTA */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {user ? (
-              <Link href="/dashboard" className="btn-primary px-5 py-2.5 rounded-full text-white font-bold text-sm shadow-lg shadow-primary-100">
-                Dashboard <i className="fas fa-arrow-right ml-1.5 text-xs"></i>
+              <Link href="/dashboard" className="btn-primary px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-white font-bold text-xs sm:text-sm shadow-lg shadow-primary-100 whitespace-nowrap">
+                Dashboard <i className="fas fa-arrow-right ml-1 text-[10px] sm:text-xs"></i>
               </Link>
             ) : (
               <>
-                <Link href="/login" className="text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors px-4 py-2">
+                <Link href="/login" className="hidden sm:inline-block text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors px-4 py-2 whitespace-nowrap">
                   Sign In
                 </Link>
-                <Link href="/login" className="btn-primary px-5 py-2.5 rounded-full text-white font-bold text-sm shadow-lg shadow-primary-100">
-                  Get Started Free
+                <Link href="/login" className="btn-primary px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-white font-bold text-xs sm:text-sm shadow-lg shadow-primary-100 whitespace-nowrap">
+                  <span className="sm:hidden">Get Started</span>
+                  <span className="hidden sm:inline">Get Started Free</span>
                 </Link>
               </>
             )}
