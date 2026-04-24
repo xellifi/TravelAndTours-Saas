@@ -536,11 +536,11 @@ export default function TravelTemplate({
                 className="absolute inset-0 opacity-10 hero-pattern"
                 aria-hidden
               />
-              <div className="relative z-10 space-y-6">
+              <div className="relative z-10 space-y-6 text-center">
                 <h3 className="text-2xl font-bold">Get in touch</h3>
 
                 {business.address && (
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-4 justify-center text-left">
                     <div className="w-11 h-11 rounded-xl bg-white/10 ring-1 ring-white/20 flex items-center justify-center flex-shrink-0">
                       <i className="fas fa-map-marker-alt" />
                     </div>
@@ -556,7 +556,7 @@ export default function TravelTemplate({
                 {business.phone && (
                   <a
                     href={`tel:${business.phone}`}
-                    className="flex items-start gap-4 hover:text-accent-300 transition-colors"
+                    className="flex items-start gap-4 justify-center text-left hover:text-accent-300 transition-colors"
                   >
                     <div className="w-11 h-11 rounded-xl bg-white/10 ring-1 ring-white/20 flex items-center justify-center flex-shrink-0">
                       <i className="fas fa-phone" />
@@ -573,7 +573,7 @@ export default function TravelTemplate({
                 {business.email && (
                   <a
                     href={`mailto:${business.email}`}
-                    className="flex items-start gap-4 hover:text-accent-300 transition-colors"
+                    className="flex items-start gap-4 justify-center text-left hover:text-accent-300 transition-colors"
                   >
                     <div className="w-11 h-11 rounded-xl bg-white/10 ring-1 ring-white/20 flex items-center justify-center flex-shrink-0">
                       <i className="fas fa-envelope" />
@@ -595,7 +595,7 @@ export default function TravelTemplate({
                         Follow us
                       </p>
                       {links.length > 0 ? (
-                        <SocialLinks links={links} variant="dark" />
+                        <SocialLinks links={links} variant="dark" className="justify-center" />
                       ) : (
                         <p className="text-primary-200/70 text-sm">
                           Add your social links from the dashboard to show them
