@@ -31,34 +31,37 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
 
   const isExisting = Boolean(business);
 
+  const slugInputClass =
+    'w-full min-w-0 px-3 py-3 sm:px-4 sm:py-3.5 text-sm sm:text-base rounded-r-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all';
+
   return (
     <form
       action={action}
-      className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 space-y-8"
+      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 space-y-5 sm:space-y-6"
     >
-      <h2 className="text-xl font-bold text-gray-900">Business Information</h2>
+      <h2 className="text-base sm:text-xl font-bold text-gray-900">Business Information</h2>
 
       <Alert state={state} />
 
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
           Business Name
         </label>
         <input
           name="name"
           defaultValue={business?.name || ''}
           required
-          className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+          className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
           placeholder="My Travel Agency"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
           Landing Page URL
         </label>
-        <div className="flex items-center">
-          <span className="px-4 py-4 bg-gray-100 rounded-l-2xl text-gray-500 font-medium text-sm border-2 border-r-0 border-transparent whitespace-nowrap">
+        <div className="flex items-stretch">
+          <span className="px-2.5 py-3 sm:px-3 sm:py-3.5 bg-gray-100 rounded-l-xl text-gray-500 font-medium text-xs sm:text-sm border-2 border-r-0 border-transparent whitespace-nowrap flex items-center max-w-[45%] truncate">
             {baseUrl}/
           </span>
           <input
@@ -66,11 +69,11 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
             defaultValue={business?.slug || ''}
             onChange={(e) => setSlugPreview(e.target.value)}
             required
-            className="flex-1 px-4 py-4 rounded-r-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+            className={slugInputClass}
             placeholder="my-travel-agency"
           />
         </div>
-        <p className="mt-2 text-xs text-gray-400">
+        <p className="mt-2 text-[11px] sm:text-xs text-gray-400 break-all">
           Letters, numbers, and hyphens only. This is your public URL.
           {slugPreview && (
             <>
@@ -90,13 +93,13 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
           Page Template
         </label>
         <select
           name="template_id"
           defaultValue={business?.template_id || 'travel'}
-          className="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all appearance-none"
+          className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
         >
           {templates.map((t) => (
             <option key={t.id} value={t.id}>
@@ -107,7 +110,7 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
       </div>
 
       <SubmitButton
-        className="w-full btn-primary py-4 rounded-2xl text-white font-bold text-lg shadow-xl"
+        className="w-full btn-primary py-3 sm:py-4 rounded-xl text-white font-bold text-sm sm:text-base shadow-md"
         pendingText={isExisting ? 'Updating…' : 'Creating…'}
       >
         {isExisting ? 'Update Business' : 'Create Business'}

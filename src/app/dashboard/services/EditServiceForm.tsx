@@ -81,7 +81,7 @@ export default function EditServiceForm({ service, onClose }: Props) {
           name="name"
           required
           defaultValue={service.name}
-          className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+          className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
         />
       </div>
 
@@ -124,7 +124,7 @@ export default function EditServiceForm({ service, onClose }: Props) {
             type="url"
             defaultValue={service.image_url || ''}
             placeholder="https://…"
-            className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
           />
         )}
 
@@ -165,7 +165,7 @@ export default function EditServiceForm({ service, onClose }: Props) {
             min="0"
             step="0.01"
             defaultValue={service.price_min ?? ''}
-            className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
           />
         </div>
         <div>
@@ -178,7 +178,7 @@ export default function EditServiceForm({ service, onClose }: Props) {
             min="0"
             step="0.01"
             defaultValue={service.price_max ?? ''}
-            className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
           />
         </div>
       </div>

@@ -34,110 +34,125 @@ export default async function BookingsView() {
 
   const hasBookings = (bookings?.length ?? 0) > 0;
 
+  const statusBadge = (status: string) =>
+    status === 'approved' ? 'bg-green-100 text-green-700' :
+    status === 'rejected' ? 'bg-red-100 text-red-700' :
+    status === 'completed' ? 'bg-blue-100 text-blue-700' :
+    'bg-yellow-100 text-yellow-700';
+
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900">Manage Bookings</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-5 sm:mb-8">
+        <h1 className="text-xl sm:text-3xl font-extrabold text-gray-900">Manage Bookings</h1>
         {hasBookings ? (
           <a
             href="/dashboard/bookings/export"
-            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-gray-900 text-white hover:bg-gray-700 transition-colors"
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold bg-gray-900 text-white hover:bg-gray-700 transition-colors"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
-              />
-            </svg>
+            <i className="fas fa-download text-xs"></i>
             Export CSV
           </a>
         ) : (
           <span
             aria-disabled
-            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-gray-100 text-gray-400 cursor-not-allowed"
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold bg-gray-100 text-gray-400 cursor-not-allowed"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
-              />
-            </svg>
+            <i className="fas fa-download text-xs"></i>
             Export CSV
           </span>
         )}
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b border-gray-100">
-            <tr>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Client</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Service</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Date</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {bookings?.map((booking) => (
-              <tr key={booking.id} className="hover:bg-gray-50/50 transition-colors">
-                <td className="px-6 py-4">
-                  <p className="font-bold text-gray-900">{booking.client_name}</p>
-                  <p className="text-sm text-gray-500">{booking.client_email}</p>
-                </td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-700">
-                  {booking.services?.name || 'N/A'}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
-                  {new Date(booking.booking_date).toLocaleString()}
-                </td>
-                <td className="px-6 py-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
-                    booking.status === 'approved' ? 'bg-green-100 text-green-700' :
-                    booking.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                    booking.status === 'completed' ? 'bg-blue-100 text-blue-700' :
-                    'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {booking.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                   <div className="flex justify-end gap-2">
-                      <form action={updateBookingStatus}>
-                        <input type="hidden" name="id" value={booking.id} />
-                        <select 
-                          name="status" 
-                          onChange={(e) => e.target.form?.requestSubmit()}
-                          className="text-xs font-bold border rounded-lg px-2 py-1 outline-none"
-                        >
-                          <option value="pending" disabled={booking.status === 'pending'}>Change Status</option>
-                          <option value="approved">Approve</option>
-                          <option value="completed">Complete</option>
-                          <option value="rejected">Reject</option>
-                        </select>
-                      </form>
-                   </div>
-                </td>
+      {/* Mobile: card list */}
+      <div className="sm:hidden space-y-3">
+        {bookings?.map((booking) => (
+          <div key={booking.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div className="min-w-0 flex-1">
+                <p className="font-bold text-gray-900 text-[15px] truncate">{booking.client_name}</p>
+                <p className="text-xs text-gray-500 truncate">{booking.client_email}</p>
+              </div>
+              <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase whitespace-nowrap ${statusBadge(booking.status)}`}>
+                {booking.status}
+              </span>
+            </div>
+            <div className="text-xs text-gray-600 space-y-1 mb-3">
+              <p><span className="text-gray-400 font-semibold">Service:</span> {booking.services?.name || 'N/A'}</p>
+              <p><span className="text-gray-400 font-semibold">Date:</span> {new Date(booking.booking_date).toLocaleString()}</p>
+            </div>
+            <form action={updateBookingStatus}>
+              <input type="hidden" name="id" value={booking.id} />
+              <select
+                name="status"
+                onChange={(e) => e.target.form?.requestSubmit()}
+                className="w-full text-xs font-bold border rounded-lg px-3 py-2 bg-gray-50 outline-none"
+              >
+                <option value="pending" disabled={booking.status === 'pending'}>Change Status</option>
+                <option value="approved">Approve</option>
+                <option value="completed">Complete</option>
+                <option value="rejected">Reject</option>
+              </select>
+            </form>
+          </div>
+        ))}
+        {bookings?.length === 0 && (
+          <div className="p-8 text-center text-gray-400 text-sm bg-white rounded-2xl border border-gray-100">No bookings yet.</div>
+        )}
+      </div>
+
+      {/* Desktop: table */}
+      <div className="hidden sm:block bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left min-w-[640px]">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Client</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Service</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Date</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Status</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {bookings?.map((booking) => (
+                <tr key={booking.id} className="hover:bg-gray-50/50 transition-colors">
+                  <td className="px-6 py-4">
+                    <p className="font-bold text-gray-900">{booking.client_name}</p>
+                    <p className="text-sm text-gray-500">{booking.client_email}</p>
+                  </td>
+                  <td className="px-6 py-4 text-sm font-medium text-gray-700">
+                    {booking.services?.name || 'N/A'}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {new Date(booking.booking_date).toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${statusBadge(booking.status)}`}>
+                      {booking.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                     <div className="flex justify-end gap-2">
+                        <form action={updateBookingStatus}>
+                          <input type="hidden" name="id" value={booking.id} />
+                          <select
+                            name="status"
+                            onChange={(e) => e.target.form?.requestSubmit()}
+                            className="text-xs font-bold border rounded-lg px-2 py-1 outline-none"
+                          >
+                            <option value="pending" disabled={booking.status === 'pending'}>Change Status</option>
+                            <option value="approved">Approve</option>
+                            <option value="completed">Complete</option>
+                            <option value="rejected">Reject</option>
+                          </select>
+                        </form>
+                     </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         {bookings?.length === 0 && (
           <div className="p-12 text-center text-gray-400">No bookings yet.</div>
         )}

@@ -37,10 +37,10 @@ export default async function BusinessSettings() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'mywebpages.live';
 
   return (
-    <div className="max-w-2xl space-y-8">
+    <div className="max-w-2xl space-y-5 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-1">Business Settings</h1>
-        <p className="text-gray-500">
+        <h1 className="text-xl sm:text-3xl font-extrabold text-gray-900 mb-1">Business Settings</h1>
+        <p className="text-gray-500 text-sm sm:text-base">
           Configure your landing page, template, and payment details.
         </p>
       </div>
@@ -50,8 +50,8 @@ export default async function BusinessSettings() {
       {business ? (
         <PaymentSettingsForm paymentSettings={paymentSettings} />
       ) : (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-sm text-amber-800 font-medium flex items-center gap-3">
-          <i className="fas fa-info-circle text-amber-500"></i>
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 text-sm text-amber-800 font-medium flex items-center gap-3">
+          <i className="fas fa-info-circle text-amber-500 flex-shrink-0"></i>
           Create your business above first, then you can configure payment settings.
         </div>
       )}

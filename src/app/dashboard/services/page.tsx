@@ -32,20 +32,18 @@ export default async function ServicesManagement() {
 
   return (
     <div>
-      <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900">Manage Services</h1>
-          <p className="text-gray-500 mt-1">
-            Add a photo and a price range so visitors know what to expect.
-          </p>
-        </div>
+      <div className="mb-5 sm:mb-8">
+        <h1 className="text-xl sm:text-3xl font-extrabold text-gray-900">Manage Services</h1>
+        <p className="text-gray-500 text-sm sm:text-base mt-1">
+          Add a photo and a price range so visitors know what to expect.
+        </p>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-10 items-start">
-        <div className="lg:col-span-2 space-y-4">
+      <div className="grid lg:grid-cols-3 gap-5 sm:gap-10 items-start">
+        <div className="lg:col-span-2 order-2 lg:order-1 space-y-3 sm:space-y-4">
           {!services || services.length === 0 ? (
-            <div className="p-12 border-2 border-dashed border-gray-200 rounded-3xl text-center text-gray-400">
-              No services yet. Add your first one on the right.
+            <div className="p-6 sm:p-12 border-2 border-dashed border-gray-200 rounded-2xl sm:rounded-3xl text-center text-sm sm:text-base text-gray-400">
+              No services yet. Add your first one using the form.
             </div>
           ) : (
             services.map((service) => (
@@ -54,7 +52,7 @@ export default async function ServicesManagement() {
           )}
         </div>
 
-        <div>
+        <div className="order-1 lg:order-2">
           <AddServiceForm />
         </div>
       </div>

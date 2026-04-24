@@ -44,27 +44,26 @@ export default async function HeroImagesPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900">
+      <div className="mb-5 sm:mb-8">
+        <h1 className="text-xl sm:text-3xl font-extrabold text-gray-900">
           Main Page Images
         </h1>
-        <p className="text-gray-500 mt-1 max-w-2xl">
+        <p className="text-gray-500 text-sm sm:text-base mt-1 max-w-2xl">
           Upload up to {MAX_HERO_IMAGES} photos to feature in the hero section
-          of your landing page. They'll rotate automatically with a smooth
-          spinning animation.
+          of your landing page. They&apos;ll rotate automatically.
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-10 items-start">
-        <div className="lg:col-span-2 space-y-4">
+      <div className="grid lg:grid-cols-3 gap-5 sm:gap-8 items-start">
+        <div className="lg:col-span-2 order-2 lg:order-1 space-y-4">
           {heroImages.length === 0 ? (
-            <div className="p-12 border-2 border-dashed border-gray-200 rounded-3xl text-center text-gray-400">
-              No images yet. Add your first one on the right.
+            <div className="p-6 sm:p-12 border-2 border-dashed border-gray-200 rounded-2xl sm:rounded-3xl text-center text-sm text-gray-400">
+              No images yet. Add your first one using the form.
               <br />
               While empty, your hero will show your business logo as a fallback.
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               {heroImages.map((url, i) => (
                 <div
                   key={url}
@@ -75,23 +74,23 @@ export default async function HeroImagesPage() {
                       src={url}
                       alt={`Hero image ${i + 1}`}
                       fill
-                      sizes="(max-width: 640px) 100vw, 33vw"
+                      sizes="(max-width: 640px) 50vw, 33vw"
                       className="object-cover"
                     />
-                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/60 text-white text-xs font-bold backdrop-blur-sm">
+                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 text-white text-[10px] font-bold backdrop-blur-sm">
                       #{i + 1}
                     </div>
                   </div>
                   <form
                     action={deleteHeroImageAction}
-                    className="p-3 flex items-center justify-end"
+                    className="p-2 sm:p-3 flex items-center justify-end"
                   >
                     <input type="hidden" name="url" value={url} />
                     <button
-                      className="px-4 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-500 hover:text-white transition-all text-sm font-semibold inline-flex items-center gap-2"
+                      className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-500 hover:text-white transition-all text-xs sm:text-sm font-semibold inline-flex items-center gap-1.5"
                       aria-label={`Delete hero image ${i + 1}`}
                     >
-                      <i className="fas fa-trash" /> Delete
+                      <i className="fas fa-trash text-xs" /> <span className="hidden sm:inline">Delete</span>
                     </button>
                   </form>
                 </div>
@@ -100,7 +99,7 @@ export default async function HeroImagesPage() {
           )}
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 order-1 lg:order-2">
           <AddHeroImageForm remainingSlots={remainingSlots} />
           {business.slug && heroImages.length > 0 && (
             <Link

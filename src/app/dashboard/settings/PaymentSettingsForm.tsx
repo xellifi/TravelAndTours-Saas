@@ -28,11 +28,11 @@ export default function PaymentSettingsForm({ paymentSettings }: Props) {
   return (
     <form
       action={action}
-      className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 space-y-8"
+      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 space-y-5 sm:space-y-6"
     >
       <div>
-        <h2 className="text-xl font-bold text-gray-900">Payment Settings</h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <h2 className="text-base sm:text-xl font-bold text-gray-900">Payment Settings</h2>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1">
           These details will be shown to clients after they submit a booking request.
         </p>
       </div>
@@ -153,7 +153,7 @@ export default function PaymentSettingsForm({ paymentSettings }: Props) {
       </div>
 
       <SubmitButton
-        className="w-full btn-primary py-4 rounded-2xl text-white font-bold text-lg shadow-xl"
+        className="w-full btn-primary py-3 sm:py-4 rounded-xl text-white font-bold text-sm sm:text-base shadow-md"
         pendingText="Saving…"
       >
         Save Payment Settings

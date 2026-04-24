@@ -48,11 +48,11 @@ export default function AddServiceForm() {
     <form
       ref={formRef}
       action={formAction}
-      className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 space-y-5 sticky top-24"
+      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 space-y-4 sm:space-y-5 lg:sticky lg:top-24"
     >
       <div>
-        <h2 className="text-xl font-bold text-gray-900">Add a Service</h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <h2 className="text-base sm:text-xl font-bold text-gray-900">Add a Service</h2>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1">
           Show what you offer with a photo and a price range.
         </p>
       </div>
@@ -67,7 +67,7 @@ export default function AddServiceForm() {
           name="name"
           required
           placeholder="e.g. Boracay 3D2N Package"
-          className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+          className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
         />
       </div>
 
@@ -115,7 +115,7 @@ export default function AddServiceForm() {
               name="image_url"
               type="url"
               placeholder="https://…"
-              className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+              className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
             />
             <p className="text-xs text-gray-500 mt-2 leading-relaxed">
               Paste a public image link (Supabase Storage, Cloudinary, etc.).
@@ -157,7 +157,7 @@ export default function AddServiceForm() {
             min="0"
             step="0.01"
             placeholder="1000"
-            className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
           />
         </div>
         <div>
@@ -170,7 +170,7 @@ export default function AddServiceForm() {
             min="0"
             step="0.01"
             placeholder="5000"
-            className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
+            className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none"
           />
         </div>
       </div>
@@ -185,13 +185,13 @@ export default function AddServiceForm() {
         <textarea
           name="description"
           placeholder="A short blurb shown when visitors hover the card."
-          className="w-full p-4 bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none h-28"
+          className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base bg-gray-50 rounded-xl border border-transparent focus:border-primary-500 outline-none h-24 sm:h-28"
         />
       </div>
 
       <SubmitButton
         pendingText="Adding…"
-        className="w-full btn-primary py-4 rounded-xl text-white font-bold"
+        className="w-full btn-primary py-3 sm:py-4 rounded-xl text-white font-bold text-sm sm:text-base"
       >
         Add Service
       </SubmitButton>

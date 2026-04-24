@@ -81,11 +81,11 @@ export default function AddHeroImageForm({ remainingSlots }: Props) {
     <form
       ref={formRef}
       action={formAction}
-      className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 space-y-5"
+      className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 space-y-4 sm:space-y-5"
     >
       <div>
-        <h2 className="text-xl font-bold text-gray-900">Add a Photo</h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <h2 className="text-base sm:text-xl font-bold text-gray-900">Add a Photo</h2>
+        <p className="text-xs sm:text-sm text-gray-500 mt-1">
           You can add up to <strong>{MAX_HERO_IMAGES}</strong> images.
           {remainingSlots > 0 && (
             <>
@@ -137,7 +137,7 @@ export default function AddHeroImageForm({ remainingSlots }: Props) {
 
       <SubmitButton
         pendingText="Uploading…"
-        className="w-full btn-primary py-4 rounded-xl text-white font-bold"
+        className="w-full btn-primary py-3 sm:py-4 rounded-xl text-white font-bold text-sm sm:text-base"
       >
         {selectedCount > 1 ? `Upload ${selectedCount} Images` : 'Upload Image'}
       </SubmitButton>
