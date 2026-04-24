@@ -13,8 +13,8 @@ export default function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="border-t border-gray-100 bg-white">
-      <div className="max-w-7xl mx-auto px-8 flex gap-1">
+    <nav className="border-t border-gray-100 bg-white overflow-x-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 flex gap-1 min-w-max sm:min-w-0">
         {LINKS.map((link) => {
           const active = link.exact
             ? pathname === link.href
@@ -23,7 +23,7 @@ export default function AdminNav() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 transition-all ${
+              className={`flex items-center gap-2 px-3 sm:px-4 py-3 text-sm font-bold border-b-2 transition-all whitespace-nowrap ${
                 active
                   ? 'border-primary-600 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-900'

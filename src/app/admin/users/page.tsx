@@ -24,12 +24,12 @@ export default async function AdminUsersPage() {
 
   return (
     <div>
-      <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
+      <div className="flex flex-wrap items-end justify-between mb-6 sm:mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
             Manage Users
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 mt-1 text-sm">
             Add new accounts, change roles, or remove users from the platform.
           </p>
         </div>
@@ -38,49 +38,51 @@ export default async function AdminUsersPage() {
         </span>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8 items-start">
+      <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 items-start">
         <div className="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
-                  User
-                </th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
-                  Role
-                </th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
-                  Business
-                </th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
-                  Joined
-                </th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide text-right">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {users?.map((u) => {
-                const biz = businessByOwner.get(u.id);
-                return (
-                  <UserRow
-                    key={u.id}
-                    id={u.id}
-                    email={u.email}
-                    fullName={u.full_name}
-                    role={u.role}
-                    createdAt={u.created_at}
-                    businessName={biz?.name || null}
-                    businessSlug={biz?.slug || null}
-                    isSelf={u.id === currentUser?.id}
-                  />
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left min-w-[600px]">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    User
+                  </th>
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    Role
+                  </th>
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    Business
+                  </th>
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    Joined
+                  </th>
+                  <th className="px-4 sm:px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide text-right">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {users?.map((u) => {
+                  const biz = businessByOwner.get(u.id);
+                  return (
+                    <UserRow
+                      key={u.id}
+                      id={u.id}
+                      email={u.email}
+                      fullName={u.full_name}
+                      role={u.role}
+                      createdAt={u.created_at}
+                      businessName={biz?.name || null}
+                      businessSlug={biz?.slug || null}
+                      isSelf={u.id === currentUser?.id}
+                    />
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
           {(!users || users.length === 0) && (
-            <div className="p-16 text-center text-gray-400">
+            <div className="p-12 sm:p-16 text-center text-gray-400">
               <i className="fas fa-users text-4xl mb-4 block opacity-20"></i>
               No users yet.
             </div>
