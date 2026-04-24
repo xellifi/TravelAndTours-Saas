@@ -42,6 +42,10 @@ export async function updateBusinessAction(
   const name = ((formData.get('name') as string) || '').trim();
   const slugRaw = ((formData.get('slug') as string) || '').trim();
   const templateId = (formData.get('template_id') as string) || 'travel';
+  const operatingHours =
+    ((formData.get('operating_hours') as string) || '').trim() || null;
+  const operatingHoursNote =
+    ((formData.get('operating_hours_note') as string) || '').trim() || null;
 
   if (!name) return { success: false, message: 'Business name is required.' };
   if (!slugRaw) return { success: false, message: 'Landing page URL is required.' };
@@ -58,7 +62,13 @@ export async function updateBusinessAction(
 
   const { error } = await supabase
     .from('businesses')
-    .update({ name, slug, template_id: templateId })
+    .update({
+      name,
+      slug,
+      template_id: templateId,
+      operating_hours: operatingHours,
+      operating_hours_note: operatingHoursNote,
+    })
     .eq('id', business.id);
 
   if (error) {

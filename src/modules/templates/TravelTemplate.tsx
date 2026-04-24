@@ -583,6 +583,25 @@ export default function TravelTemplate({
                   </a>
                 )}
 
+                {business.operating_hours && (
+                  <div className="flex items-start gap-4">
+                    <div className="w-11 h-11 rounded-xl bg-white/10 ring-1 ring-white/20 flex items-center justify-center flex-shrink-0">
+                      <i className="fas fa-clock" />
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-widest text-primary-200/80 font-semibold">
+                        Hours
+                      </p>
+                      <p className="text-white/90">{business.operating_hours}</p>
+                      {business.operating_hours_note && (
+                        <p className="text-primary-200/70 text-sm mt-0.5">
+                          {business.operating_hours_note}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {(() => {
                   const links = readSocialLinks(business.social_links);
                   return (

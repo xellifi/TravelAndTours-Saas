@@ -90,6 +90,11 @@ The schema lives in Supabase. Migrations checked into the repo as `.sql` files:
   catalogue + `readSocialLinks` / `normalizeUrl` helpers live in
   `src/lib/socialPlatforms.ts`. The admin clone action copies the column for
   free because it spreads all non-identity fields from the source row.
+- `operating_hours_migration.sql` — adds `operating_hours TEXT` and
+  `operating_hours_note TEXT` to `businesses`. Free-form text (e.g.
+  "Mon – Sat · 9:00 AM – 7:00 PM" + "Sundays by appointment"). Edited from
+  `/dashboard/settings` via `BusinessInfoForm` and `updateBusinessAction`,
+  rendered in `TravelTemplate`'s contact info card next to address/phone/email.
 
 > **Run new migrations in the Supabase SQL editor.**
 

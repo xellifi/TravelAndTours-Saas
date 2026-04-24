@@ -10,6 +10,8 @@ type Business = {
   name?: string | null;
   slug?: string | null;
   template_id?: string | null;
+  operating_hours?: string | null;
+  operating_hours_note?: string | null;
 } | null;
 
 type Props = {
@@ -107,6 +109,41 @@ export default function BusinessInfoForm({ business, baseUrl, templates }: Props
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="pt-2 border-t border-gray-100">
+        <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-1">
+          Operating Hours
+        </h3>
+        <p className="text-xs sm:text-sm text-gray-500 mb-4">
+          Shown on your public landing page. Leave blank to hide.
+        </p>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
+              Hours
+            </label>
+            <input
+              name="operating_hours"
+              defaultValue={business?.operating_hours || ''}
+              className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+              placeholder="Mon – Sat · 9:00 AM – 7:00 PM"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
+              Note <span className="text-gray-400 font-normal normal-case">(optional)</span>
+            </label>
+            <input
+              name="operating_hours_note"
+              defaultValue={business?.operating_hours_note || ''}
+              className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base rounded-xl bg-gray-50 border-2 border-transparent focus:border-primary-500 outline-none transition-all"
+              placeholder="Sundays by appointment"
+            />
+          </div>
+        </div>
       </div>
 
       <SubmitButton
