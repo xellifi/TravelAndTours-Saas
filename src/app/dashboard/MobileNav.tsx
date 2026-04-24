@@ -196,8 +196,8 @@ export default function MobileNav({
         className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-gray-100"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        <div className="grid grid-cols-5 h-16">
-          {bottomItems.slice(0, 4).map((item) => {
+        <div className="grid grid-cols-4 h-16">
+          {bottomItems.slice(0, 3).map((item) => {
             const active =
               item.href === '/dashboard'
                 ? pathname === '/dashboard'
