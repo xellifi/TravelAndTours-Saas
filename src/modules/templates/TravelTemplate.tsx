@@ -464,15 +464,19 @@ export default function TravelTemplate({
                     ))}
                   </ul>
 
-                  <div className="hidden sm:block mt-10 pt-8 border-t border-white/15">
-                    <p className="text-xs uppercase tracking-widest text-primary-200/80 font-semibold mb-2">
-                      Operating hours
-                    </p>
-                    <p className="text-white/90">Mon – Sat · 9:00 AM – 7:00 PM</p>
-                    <p className="text-primary-200/70 text-sm">
-                      Sundays by appointment
-                    </p>
-                  </div>
+                  {business.operating_hours && (
+                    <div className="hidden sm:block mt-10 pt-8 border-t border-white/15">
+                      <p className="text-xs uppercase tracking-widest text-primary-200/80 font-semibold mb-2">
+                        Operating hours
+                      </p>
+                      <p className="text-white/90">{business.operating_hours}</p>
+                      {business.operating_hours_note && (
+                        <p className="text-primary-200/70 text-sm">
+                          {business.operating_hours_note}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -581,25 +585,6 @@ export default function TravelTemplate({
                       <p className="text-white/90 break-all">{business.email}</p>
                     </div>
                   </a>
-                )}
-
-                {business.operating_hours && (
-                  <div className="flex items-start gap-4">
-                    <div className="w-11 h-11 rounded-xl bg-white/10 ring-1 ring-white/20 flex items-center justify-center flex-shrink-0">
-                      <i className="fas fa-clock" />
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-widest text-primary-200/80 font-semibold">
-                        Hours
-                      </p>
-                      <p className="text-white/90">{business.operating_hours}</p>
-                      {business.operating_hours_note && (
-                        <p className="text-primary-200/70 text-sm mt-0.5">
-                          {business.operating_hours_note}
-                        </p>
-                      )}
-                    </div>
-                  </div>
                 )}
 
                 {(() => {
