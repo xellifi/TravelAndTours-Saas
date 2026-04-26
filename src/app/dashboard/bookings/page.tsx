@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { requireActiveBusiness } from '@/lib/activeBusiness';
+import StatusSelect from './StatusSelect';
 
 export const dynamic = 'force-dynamic';
 
@@ -189,19 +190,12 @@ export default async function BookingsView() {
               <p><span className="text-gray-400 font-semibold">Service:</span> {booking.services?.name || 'N/A'}</p>
               <p><span className="text-gray-400 font-semibold">Date:</span> {formatBookingDate(booking.booking_date)}</p>
             </div>
-            <form action={updateBookingStatus}>
-              <input type="hidden" name="id" value={booking.id} />
-              <select
-                name="status"
-                onChange={(e) => e.target.form?.requestSubmit()}
-                className="w-full text-xs font-bold border rounded-lg px-3 py-2 bg-gray-50 outline-none"
-              >
-                <option value="pending" disabled={booking.status === 'pending'}>Change Status</option>
-                <option value="approved">Approve</option>
-                <option value="completed">Complete</option>
-                <option value="rejected">Reject</option>
-              </select>
-            </form>
+            <StatusSelect
+              bookingId={booking.id}
+              currentStatus={booking.status}
+              action={updateBookingStatus}
+              variant="mobile"
+            />
           </div>
         ))}
         {bookings?.length === 0 && (
@@ -242,19 +236,12 @@ export default async function BookingsView() {
                   </td>
                   <td className="px-6 py-4 text-right">
                      <div className="flex justify-end gap-2">
-                        <form action={updateBookingStatus}>
-                          <input type="hidden" name="id" value={booking.id} />
-                          <select
-                            name="status"
-                            onChange={(e) => e.target.form?.requestSubmit()}
-                            className="text-xs font-bold border rounded-lg px-2 py-1 outline-none"
-                          >
-                            <option value="pending" disabled={booking.status === 'pending'}>Change Status</option>
-                            <option value="approved">Approve</option>
-                            <option value="completed">Complete</option>
-                            <option value="rejected">Reject</option>
-                          </select>
-                        </form>
+                        <StatusSelect
+                          bookingId={booking.id}
+                          currentStatus={booking.status}
+                          action={updateBookingStatus}
+                          variant="desktop"
+                        />
                      </div>
                   </td>
                 </tr>
