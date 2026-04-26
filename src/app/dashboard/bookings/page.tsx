@@ -112,11 +112,17 @@ export default async function BookingsView() {
     );
   }
 
-  const statusBadge = (status: string) =>
+  const statusBadge = (status: string | null) =>
     status === 'approved' ? 'bg-green-100 text-green-700' :
     status === 'rejected' ? 'bg-red-100 text-red-700' :
     status === 'completed' ? 'bg-blue-100 text-blue-700' :
     'bg-yellow-100 text-yellow-700';
+
+  const formatBookingDate = (value: string | null) => {
+    if (!value) return '—';
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? '—' : d.toLocaleString();
+  };
 
   return (
     <div>
@@ -157,12 +163,12 @@ export default async function BookingsView() {
                 <p className="text-xs text-gray-500 truncate">{booking.client_email}</p>
               </div>
               <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase whitespace-nowrap ${statusBadge(booking.status)}`}>
-                {booking.status}
+                {booking.status || 'pending'}
               </span>
             </div>
             <div className="text-xs text-gray-600 space-y-1 mb-3">
               <p><span className="text-gray-400 font-semibold">Service:</span> {booking.services?.name || 'N/A'}</p>
-              <p><span className="text-gray-400 font-semibold">Date:</span> {new Date(booking.booking_date).toLocaleString()}</p>
+              <p><span className="text-gray-400 font-semibold">Date:</span> {formatBookingDate(booking.booking_date)}</p>
             </div>
             <form action={updateBookingStatus}>
               <input type="hidden" name="id" value={booking.id} />
@@ -208,11 +214,11 @@ export default async function BookingsView() {
                     {booking.services?.name || 'N/A'}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
-                    {new Date(booking.booking_date).toLocaleString()}
+                    {formatBookingDate(booking.booking_date)}
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${statusBadge(booking.status)}`}>
-                      {booking.status}
+                      {booking.status || 'pending'}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
