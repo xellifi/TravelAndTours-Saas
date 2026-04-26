@@ -10,7 +10,6 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'mywebpages Dashboard',
-  manifest: '/dashboard/manifest.webmanifest',
   appleWebApp: { capable: true, statusBarStyle: 'default', title: 'mywebpages' },
 };
 

@@ -94,7 +94,12 @@ The schema lives in Supabase. Migrations checked into the repo as `.sql` files:
   `operating_hours_note TEXT` to `businesses`. Free-form text (e.g.
   "Mon – Sat · 9:00 AM – 7:00 PM" + "Sundays by appointment"). Edited from
   `/dashboard/settings` via `BusinessInfoForm` and `updateBusinessAction`,
-  rendered in `TravelTemplate`'s contact info card next to address/phone/email.
+  rendered in `TravelTemplate`'s "Book a Service" panel.
+- `bookings_migration.sql` — creates the `bookings` table (with FK to
+  `businesses` and `services`) plus RLS policies. Public landing pages insert
+  via `BookingForm`; owners read/update at `/dashboard/bookings`. The dashboard
+  page fails gracefully with a "table not set up" notice if this migration
+  hasn't been run yet, so production won't crash on a missing table.
 
 > **Run new migrations in the Supabase SQL editor.**
 

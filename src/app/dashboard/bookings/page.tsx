@@ -26,11 +26,33 @@ export default async function BookingsView() {
   const { business } = ctx;
   const supabase = await createClient();
 
-  const { data: bookings } = await supabase
-    .from('bookings')
-    .select('*, services(name)')
-    .eq('business_id', business.id)
-    .order('created_at', { ascending: false });
+  type BookingRow = {
+    id: string;
+    client_name: string | null;
+    client_email: string | null;
+    booking_date: string | null;
+    status: string | null;
+    services: { name: string | null } | null;
+  };
+
+  let bookings: BookingRow[] | null = null;
+  let loadError: string | null = null;
+
+  try {
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('id, client_name, client_email, booking_date, status, services(name)')
+      .eq('business_id', business.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      loadError = error.message;
+    } else {
+      bookings = (data || []) as unknown as BookingRow[];
+    }
+  } catch (err) {
+    loadError = err instanceof Error ? err.message : 'Unknown error';
+  }
 
   async function updateBookingStatus(formData: FormData) {
     'use server';
@@ -50,6 +72,45 @@ export default async function BookingsView() {
   }
 
   const hasBookings = (bookings?.length ?? 0) > 0;
+
+  if (loadError) {
+    return (
+      <div>
+        <div className="mb-5 sm:mb-8">
+          <h1 className="text-xl sm:text-3xl font-extrabold text-gray-900">Manage Bookings</h1>
+          <p className="text-gray-500 text-sm sm:text-base mt-1">
+            Bookings for{' '}
+            <span className="font-bold text-gray-700">{business.name}</span>.
+          </p>
+        </div>
+        <div className="bg-white p-6 sm:p-10 rounded-2xl sm:rounded-3xl border border-gray-300">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center flex-shrink-0">
+              <i className="fas fa-triangle-exclamation"></i>
+            </div>
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-1">
+                Bookings table not set up yet
+              </h2>
+              <p className="text-sm text-gray-600 mb-3">
+                We couldn&apos;t load your bookings. This usually means the{' '}
+                <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs">bookings</code>{' '}
+                table hasn&apos;t been created in your database yet. Run the{' '}
+                <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs">bookings_migration.sql</code>{' '}
+                file in your Supabase SQL Editor to set it up, then refresh this page.
+              </p>
+              <details className="text-xs text-gray-500">
+                <summary className="cursor-pointer font-semibold">Technical details</summary>
+                <pre className="mt-2 p-3 bg-gray-50 rounded-lg overflow-auto whitespace-pre-wrap break-all">
+                  {loadError}
+                </pre>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const statusBadge = (status: string) =>
     status === 'approved' ? 'bg-green-100 text-green-700' :
