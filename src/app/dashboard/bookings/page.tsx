@@ -6,7 +6,26 @@ import { requireActiveBusiness } from '@/lib/activeBusiness';
 export const dynamic = 'force-dynamic';
 
 export default async function BookingsView() {
-  const ctx = await requireActiveBusiness();
+  let ctx: Awaited<ReturnType<typeof requireActiveBusiness>> = null;
+  let bootError: string | null = null;
+  try {
+    ctx = await requireActiveBusiness();
+  } catch (err) {
+    bootError = err instanceof Error ? err.message : 'Unknown error';
+  }
+
+  if (bootError) {
+    return (
+      <div>
+        <h1 className="text-xl sm:text-3xl font-extrabold text-gray-900 mb-3">Manage Bookings</h1>
+        <div className="bg-white p-6 rounded-2xl border border-gray-300 text-sm text-gray-700">
+          <p className="font-bold mb-2">Couldn&apos;t load your active business.</p>
+          <pre className="text-xs bg-gray-50 p-3 rounded-lg whitespace-pre-wrap break-all">{bootError}</pre>
+        </div>
+      </div>
+    );
+  }
+
   if (!ctx) {
     return (
       <div className="bg-white p-12 rounded-3xl border border-gray-300 text-center">
